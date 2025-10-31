@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Domain\Waracle.HotelBookingSystem.Domain.csproj" />
-    <ProjectReference Include="..\Waracle.HotelBookingSystem.Infrastructure\Waracle.HotelBookingSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\Waracle.HotelBookingSystem.Infrastructure\Waracle.HotelBookingSystem.Infrastructure.AzureSql.csproj" />
   </ItemGroup>
 
 </Project>

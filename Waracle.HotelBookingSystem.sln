@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Domain", "Waracle.HotelBookingSystem.Domain\Waracle.HotelBookingSystem.Domain.csproj", "{4323F7A6-DDF7-4FEA-94F9-FABAD0303F79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Infrastructure", "Waracle.HotelBookingSystem.Infrastructure\Waracle.HotelBookingSystem.Infrastructure.csproj", "{A957CA42-FF5D-4251-8F9E-20EF723C4B55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Infrastructure.AzureSql", "Waracle.HotelBookingSystem.Infrastructure\Waracle.HotelBookingSystem.Infrastructure.AzureSql.csproj", "{A957CA42-FF5D-4251-8F9E-20EF723C4B55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Data.Repositories", "Waracle.HotelBookingSystem.Data.Repositories\Waracle.HotelBookingSystem.Data.Repositories.csproj", "{615CA718-3F6E-447B-A552-A3E4F078D274}"
 EndProject
