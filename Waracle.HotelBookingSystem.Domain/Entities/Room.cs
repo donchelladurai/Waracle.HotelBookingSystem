@@ -1,6 +1,4 @@
-﻿using Waracle.HotelBookingSystem.Domain.Enums;
-
-namespace Waracle.HotelBookingSystem.Domain.Entities
+﻿namespace Waracle.HotelBookingSystem.Domain.Entities
 {
     public class Room
     {
