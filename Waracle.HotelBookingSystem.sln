@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36429.23 d17.14
+VisualStudioVersion = 17.14.36429.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem", "Waracle.HotelBookingSystem\Waracle.HotelBookingSystem.csproj", "{3027C33E-A885-48B9-9229-9C438ED9C29B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Web.Api", "Waracle.HotelBookingSystem\Waracle.HotelBookingSystem.Web.Api.csproj", "{3027C33E-A885-48B9-9229-9C438ED9C29B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Domain", "Waracle.HotelBookingSystem.Domain\Waracle.HotelBookingSystem.Domain.csproj", "{4323F7A6-DDF7-4FEA-94F9-FABAD0303F79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Infrastructure", "Waracle.HotelBookingSystem.Infrastructure\Waracle.HotelBookingSystem.Infrastructure.csproj", "{A957CA42-FF5D-4251-8F9E-20EF723C4B55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Data.Repositories", "Waracle.HotelBookingSystem.Data.Repositories\Waracle.HotelBookingSystem.Data.Repositories.csproj", "{615CA718-3F6E-447B-A552-A3E4F078D274}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{3027C33E-A885-48B9-9229-9C438ED9C29B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3027C33E-A885-48B9-9229-9C438ED9C29B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3027C33E-A885-48B9-9229-9C438ED9C29B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4323F7A6-DDF7-4FEA-94F9-FABAD0303F79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4323F7A6-DDF7-4FEA-94F9-FABAD0303F79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4323F7A6-DDF7-4FEA-94F9-FABAD0303F79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4323F7A6-DDF7-4FEA-94F9-FABAD0303F79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A957CA42-FF5D-4251-8F9E-20EF723C4B55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A957CA42-FF5D-4251-8F9E-20EF723C4B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A957CA42-FF5D-4251-8F9E-20EF723C4B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A957CA42-FF5D-4251-8F9E-20EF723C4B55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{615CA718-3F6E-447B-A552-A3E4F078D274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{615CA718-3F6E-447B-A552-A3E4F078D274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{615CA718-3F6E-447B-A552-A3E4F078D274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{615CA718-3F6E-447B-A552-A3E4F078D274}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
