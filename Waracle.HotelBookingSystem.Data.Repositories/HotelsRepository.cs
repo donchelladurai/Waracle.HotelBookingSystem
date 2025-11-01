@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,14 +22,14 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             "Budget Inn",
             "Savoy"];
         private readonly Random _random = new();
-        private const string NUMBERSANDLETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private static long _counter = 0;
 
         public HotelRepository(HotelsDbContext context)
         {
             _hotelsDbcontext = context;
         }
 
-        public async Task<Hotel> GetByNameAsync(string name)
+        public async Task<Hotel> GetByNameAsync(string name, CancellationToken cancellationToken)
         {
             try
             {
@@ -42,7 +43,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        public async Task<List<Room>> GetAvailableRoomsAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests)
+        public async Task<List<Room>> GetAvailableRoomsAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests, CancellationToken cancellationToken)
         {
             try
             {
@@ -60,7 +61,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        public async Task<Booking> GetBookingByReferenceAsync(string reference)
+        public async Task<Booking> GetBookingByReferenceAsync(string reference, CancellationToken cancellationToken)
         {
             try
             {
@@ -77,16 +78,16 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        public async Task AddBookingAsync(Booking booking)
+        public async Task AddBookingAsync(Booking booking, CancellationToken cancellationToken)
         {
             try
             {
-                if (await IsRoomAvailable(booking.RoomId, booking.CheckInDate, booking.CheckOutDate))
+                if (await IsRoomAvailable(booking.RoomId, booking.CheckInDate, booking.CheckOutDate, cancellationToken))
                 {
                     booking.Reference = GenerateBookingReference();
                     _hotelsDbcontext.Bookings.Add(booking);
 
-                    await _hotelsDbcontext.SaveChangesAsync();
+                    await _hotelsDbcontext.SaveChangesAsync(cancellationToken);
                 }
 
                 else throw new Exception("Room not available");
@@ -97,7 +98,19 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        public async Task SeedTestDataAsync()
+        public Task<Room> GetRoomById(int roomId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return _hotelsDbcontext.Rooms.AsQueryable().AsNoTracking().FirstAsync(r => r.Id == roomId, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving the room by ID", e);
+            }
+        }
+
+        public async Task SeedTestDataAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -126,7 +139,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        public async Task RemoveAllTransactionalDataAsync()
+        public async Task RemoveAllTransactionalDataAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -142,7 +155,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        private async Task<bool> IsRoomAvailable(int roomId, DateTime checkIn, DateTime checkOut)
+        private async Task<bool> IsRoomAvailable(int roomId, DateTime checkIn, DateTime checkOut, CancellationToken cancellationToken)
         {
             try
             {
@@ -154,19 +167,19 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
+        /// <summary>
+        /// Generates a unique hotel booking reference.
+        /// </summary>
+        /// <returns>A unique booking reference string.</returns>
         private string GenerateBookingReference()
         {
-            /* Note for the interviewers:
-             I thought about using GUIDs here for uniqueness but they are too long to look like a hotel booking reference.
-             I settled on a simple solution in the end as almost all other solutions, even DateTime.UtcNow.Ticks seem probabilitic in nature. */
+            DateTime now = DateTime.UtcNow;
+            string datePart = now.ToString("yyyyMMdd-HHmmss");
 
-            char[] buffer = new char[8];
-            for (int i = 0; i < 8; i++)
-            {
-                buffer[i] = NUMBERSANDLETTERS[_random.Next(NUMBERSANDLETTERS.Length)];
-            }
+            long uniqueId = Interlocked.Increment(ref _counter);
+            string idPart = uniqueId.ToString("D3");
 
-            return new string(buffer);
+            return $"{datePart}-{idPart}";
         }
     }
 }
