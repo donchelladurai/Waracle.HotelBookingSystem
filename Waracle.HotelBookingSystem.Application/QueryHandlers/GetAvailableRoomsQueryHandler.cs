@@ -7,12 +7,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
+using Waracle.HotelBookingSystem.Common.Dtos;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Domain.Entities;
 
 namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 {
-    public class GetAvailableRoomsQueryHandler : IRequestHandler<GetAvailableRoomsQuery, IEnumerable<Room>>
+    public class GetAvailableRoomsQueryHandler : IRequestHandler<GetAvailableRoomsQuery, IEnumerable<RoomDto>>
     {
         private readonly IHotelsRepository _hotelsRepository;
         private readonly ILogger<GetAvailableRoomsQueryHandler> _logger;
@@ -23,7 +24,7 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Room>> Handle(GetAvailableRoomsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RoomDto>> Handle(GetAvailableRoomsQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -40,9 +41,20 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var availableRooms = await _hotelsRepository.GetAvailableRoomsAsync(request.CheckInDate, request.CheckOutDate, request.NumberOfGuests, cancellationToken).ConfigureAwait(false);
+                var availableRooms = await _hotelsRepository.GetAvailableRoomsAsync(
+                    request.CheckInDate,
+                    request.CheckOutDate,
+                    request.NumberOfGuests,
+                    cancellationToken)
+                    .ConfigureAwait(false);
 
-                return availableRooms;
+                return availableRooms.Select(ar => new RoomDto()
+                {
+                    RoomId = ar.Id,
+                    HotelName = ar.Hotel.Name,
+                    RoomTypeName = ar.RoomType.Name,
+                    Capacity = ar.RoomType.Capacity
+                });
             }
             catch (OperationCanceledException)
             {

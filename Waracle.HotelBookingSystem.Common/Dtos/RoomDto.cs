@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Waracle.HotelBookingSystem.Common.Dtos
 {
-    public class AvailableRoomDto
+    public class RoomDto
     {
         public int RoomId { get; set; }
         public string HotelName { get; set; } = string.Empty;

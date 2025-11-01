@@ -73,7 +73,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of available rooms that
         /// meet the specified criteria.</returns>
         /// <exception cref="Exception">Thrown if an error occurs while retrieving available rooms.</exception>
-        public async Task<List<Room>> GetAvailableRoomsAsync(DateTime checkInDate, DateTime checkOutDate, int numberOfGuests, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Room>> GetAvailableRoomsAsync(DateTime checkInDate, DateTime checkOutDate, int numberOfGuests, CancellationToken cancellationToken)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         /// <returns>A task representing the asynchronous operation. The task result contains a list of available rooms that meet
         /// the specified criteria.</returns>
         /// <exception cref="Exception">Thrown if an error occurs while retrieving available rooms.</exception>
-        public async Task<List<Room>> GetAvailableRoomsInHotelAsync(int hotelId, DateTime checkInDate, DateTime checkOutDate, int numberOfGuests, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Room>> GetAvailableRoomsInHotelAsync(int hotelId, DateTime checkInDate, DateTime checkOutDate, int numberOfGuests, CancellationToken cancellationToken)
         {
             try
             {

@@ -48,7 +48,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="Room"/>
         /// objects that are available for the specified criteria. The list will be empty if no rooms are available.</returns>
-        Task<List<Room>> GetAvailableRoomsAsync(DateTime checkIn, DateTime checkOut, int numberOfGuests, CancellationToken cancellationToken);
+        Task<IEnumerable<Room>> GetAvailableRoomsAsync(DateTime checkIn, DateTime checkOut, int numberOfGuests, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves a list of available rooms in a specified hotel for the given date range and number of guests.
@@ -60,7 +60,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="Room"/>
         /// objects that are available for the specified criteria. The list will be empty if no rooms are available.</returns>
-        Task<List<Room>> GetAvailableRoomsInHotelAsync(int hotelId, DateTime checkInDate, DateTime checkOutDate, int numberOfGuests, CancellationToken cancellationToken);
+        Task<IEnumerable<Room>> GetAvailableRoomsInHotelAsync(int hotelId, DateTime checkInDate, DateTime checkOutDate, int numberOfGuests, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves a booking by its unique reference identifier.
