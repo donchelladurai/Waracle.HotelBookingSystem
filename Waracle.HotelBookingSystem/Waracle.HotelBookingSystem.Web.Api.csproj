@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Application\Waracle.HotelBookingSystem.Application.csproj" />
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Common\Waracle.HotelBookingSystem.Common.csproj" />
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Data.Repositories\Waracle.HotelBookingSystem.Data.Repositories.csproj" />
