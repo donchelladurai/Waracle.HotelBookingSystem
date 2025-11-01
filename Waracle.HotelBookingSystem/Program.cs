@@ -23,7 +23,16 @@ namespace Waracle.HotelBookingSystem
                 configureTelemetryConfiguration: (config) => config.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"],
                 configureApplicationInsightsLoggerOptions: (options) => { }
             );
-            builder.Logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("", LogLevel.Information); // Configurable
+
+            var appInsightsLogLevelString = builder.Configuration["ApplicationInsights:LogLevel"];
+            if (Enum.TryParse<LogLevel>(appInsightsLogLevelString, true, out var appInsightsLogLevel))
+            {
+                builder.Logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("", appInsightsLogLevel);
+            }
+            else
+            {
+                builder.Logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("", LogLevel.Information);
+            }
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
