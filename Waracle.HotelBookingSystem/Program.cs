@@ -1,5 +1,7 @@
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Waracle.HotelBookingSystem.Application.QueryHandlers;
+using Waracle.HotelBookingSystem.Common.Mapping;
 using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
@@ -13,10 +15,14 @@ namespace Waracle.HotelBookingSystem
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddLogging();
+
             var connString = builder.Configuration.GetConnectionString("HotelsDbConnection");
             builder.Services.AddDbContext<HotelsDbContext>(options => options.UseSqlServer(connString));
             builder.Services.AddScoped<IHotelsRepository, HotelRepository>();
             builder.Services.AddApplicationInsightsTelemetry();
+
+            builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(GetHotelByNameQueryHandler).Assembly));
 
             // Logging
             builder.Logging.AddApplicationInsights(

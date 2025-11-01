@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Waracle.HotelBookingSystem.Application\Waracle.HotelBookingSystem.Application.csproj" />
+    <ProjectReference Include="..\Waracle.HotelBookingSystem.Common\Waracle.HotelBookingSystem.Common.csproj" />
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Data.Repositories\Waracle.HotelBookingSystem.Data.Repositories.csproj" />
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Domain\Waracle.HotelBookingSystem.Domain.csproj" />
     <ProjectReference Include="..\Waracle.HotelBookingSystem.Infrastructure\Waracle.HotelBookingSystem.Infrastructure.AzureSql.csproj" />
