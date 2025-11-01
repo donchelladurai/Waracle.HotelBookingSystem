@@ -49,13 +49,19 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 return await _azureSqlHbsDbContext.Hotels
                     .AsNoTracking()
                     .Include(h => h.Rooms)
                     .FirstOrDefaultAsync(h => h.Id == hotelId, cancellationToken)
                     .ConfigureAwait(false);
             }
-            catch(Exception e)
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to get hotel by Id was cancelled.", e, cancellationToken);  
+            }
+            catch (Exception e)
             {
                 throw new Exception("An error occurred while retrieving the hotel by Id", e);
             }
@@ -71,6 +77,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var hotels = await _azureSqlHbsDbContext.Hotels
                     .AsNoTracking()
                     .Include(h => h.Rooms)
@@ -79,6 +87,10 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
                     .ConfigureAwait(false);
 
                 return hotels;
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to get hotel by name was cancelled.", e, cancellationToken);
             }
             catch (Exception e)
             {

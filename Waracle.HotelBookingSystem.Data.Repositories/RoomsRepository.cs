@@ -30,11 +30,24 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         /// <returns>A list of rooms for a specific hotel</returns>
         public async Task<IEnumerable<Room>> GetByHotelIdAsync(int hotelId, CancellationToken cancellationToken)
         {
-            return await _azureSqlHbsDbContext.Rooms
-                .Include(r => r.Bookings)
-                .Where(room => room.HotelId == hotelId)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return await _azureSqlHbsDbContext.Rooms
+                             .Include(r => r.Bookings)
+                             .Where(room => room.HotelId == hotelId)
+                             .ToListAsync(cancellationToken)
+                             .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to get rooms by hotel Id was cancelled.", e, cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"An error occurred while retrieving rooms for hotel Id {hotelId}", exception);
+            }
         }
 
         /// <summary>
@@ -43,10 +56,23 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         /// <returns>A list of rooms</returns>
         public async Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _azureSqlHbsDbContext.Rooms
-                .Include(r => r.Bookings)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return await _azureSqlHbsDbContext.Rooms
+                            .Include(r => r.Bookings)
+                                .ToListAsync(cancellationToken)
+                            .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to get all rooms was cancelled.", e, cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("An error occurred while retrieving all rooms", exception);
+            }
         }
     }
 }
