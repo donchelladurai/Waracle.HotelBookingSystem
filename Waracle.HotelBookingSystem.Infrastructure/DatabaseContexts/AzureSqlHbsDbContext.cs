@@ -3,14 +3,14 @@ using Waracle.HotelBookingSystem.Domain.Entities;
 
 namespace Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts
 {
-    public class HotelsDbContext : DbContext 
+    public class AzureSqlHbsDbContext : DbContext 
     {
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
 
-        public HotelsDbContext(DbContextOptions<HotelsDbContext> options) : base(options) { }
+        public AzureSqlHbsDbContext(DbContextOptions<AzureSqlHbsDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

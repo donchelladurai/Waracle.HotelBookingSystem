@@ -11,7 +11,7 @@ using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
 
 namespace Waracle.HotelBookingSystem.Infrastructure.AzureSql.Migrations
 {
-    [DbContext(typeof(HotelsDbContext))]
+    [DbContext(typeof(AzureSqlHbsDbContext))]
     [Migration("20251101101556_CreateInitialTables")]
     partial class CreateInitialTables
     {

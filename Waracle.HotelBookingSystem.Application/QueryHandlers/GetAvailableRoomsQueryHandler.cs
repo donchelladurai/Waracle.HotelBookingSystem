@@ -8,20 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
+using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Domain.Entities;
+using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
+using Waracle.HotelBookingSystem.Application.Helpers;
 
 namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 {
     public class GetAvailableRoomsQueryHandler : IRequestHandler<GetAvailableRoomsQuery, IEnumerable<RoomDto>>
     {
-        private readonly IHotelsRepository _hotelsRepository;
+        private readonly IRoomsRepository _roomsRepository;
         private readonly ILogger<GetAvailableRoomsQueryHandler> _logger;
 
-        public GetAvailableRoomsQueryHandler(IHotelsRepository hotelsRepository, ILogger<GetAvailableRoomsQueryHandler> logger)
+        public GetAvailableRoomsQueryHandler(IRoomsRepository roomsRepository, ILogger<GetAvailableRoomsQueryHandler> logger)
         {
-            _hotelsRepository = hotelsRepository;
-            _logger = logger;
+            _roomsRepository = roomsRepository ?? throw new ArgumentNullException(nameof(roomsRepository)); 
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<RoomDto>> Handle(GetAvailableRoomsQuery request, CancellationToken cancellationToken)
@@ -41,12 +44,10 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var availableRooms = await _hotelsRepository.GetAvailableRoomsAsync(
-                    request.CheckInDate,
-                    request.CheckOutDate,
-                    request.NumberOfGuests,
-                    cancellationToken)
-                    .ConfigureAwait(false);
+                var allRooms = await _roomsRepository
+                    .GetAllAsync(cancellationToken).ConfigureAwait(false);
+
+                var availableRooms = allRooms.GetAvailableRooms(request.NumberOfGuests, request.CheckInDate, request.CheckOutDate);
 
                 return availableRooms.Select(ar => new RoomDto()
                 {

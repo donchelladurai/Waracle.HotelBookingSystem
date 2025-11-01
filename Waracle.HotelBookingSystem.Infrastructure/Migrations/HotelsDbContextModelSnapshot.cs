@@ -10,7 +10,7 @@ using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
 
 namespace Waracle.HotelBookingSystem.Infrastructure.AzureSql.Migrations
 {
-    [DbContext(typeof(HotelsDbContext))]
+    [DbContext(typeof(AzureSqlHbsDbContext))]
     partial class HotelsDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

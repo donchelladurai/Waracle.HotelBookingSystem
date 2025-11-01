@@ -17,8 +17,12 @@ namespace Waracle.HotelBookingSystem
             builder.Services.AddLogging();
 
             var connString = builder.Configuration.GetConnectionString("HotelsDbConnection");
-            builder.Services.AddDbContext<HotelsDbContext>(options => options.UseSqlServer(connString));
+            builder.Services.AddDbContext<AzureSqlHbsDbContext>(options => options.UseSqlServer(connString));
+            
             builder.Services.AddScoped<IHotelsRepository, HotelRepository>();
+            builder.Services.AddScoped<IRoomsRepository, RoomsRepository>();
+            builder.Services.AddScoped<IBookingsRepository, BookingsRepository>();
+
             builder.Services.AddApplicationInsightsTelemetry();
 
             builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(GetHotelsByNameQueryHandler).Assembly));
