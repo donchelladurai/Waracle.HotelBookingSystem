@@ -35,9 +35,9 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <remarks>This method performs a case-insensitive search for the hotel name.</remarks>
         /// <param name="name">The name of the hotel to retrieve. Cannot be null or empty.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="Hotel"/> object
+        /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="Hotel"/> object
         /// if found; otherwise, <see langword="null"/>.</returns>
-        Task<Hotel> GetByNameAsync(string name, CancellationToken cancellationToken);
+        Task<IEnumerable<Hotel>> GetByNameAsync(string name, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously retrieves a list of available rooms for the specified date range and number of guests.

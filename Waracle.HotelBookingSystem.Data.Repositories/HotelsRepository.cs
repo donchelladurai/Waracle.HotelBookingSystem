@@ -49,13 +49,18 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         /// <returns>A task that represents the asynchronous operation. The task result contains the hotel with the specified
         /// name, or <see langword="null"/> if no hotel with that name exists.</returns>
         /// <exception cref="Exception">Thrown if an error occurs while retrieving the hotel.</exception>
-        public async Task<Hotel> GetByNameAsync(string name, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Hotel>> GetByNameAsync(string name, CancellationToken cancellationToken)
         {
             try
             {
-                Hotel? hotel = await _hotelsDbcontext.Hotels.Include(h => h.Rooms).FirstOrDefaultAsync(h => h.Name == name);
+                var hotels = await _hotelsDbcontext.Hotels
+                    .AsNoTracking()
+                    .Include(h => h.Rooms)
+                    .Where(h => h.Name.Contains(name))
+                    .ToListAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
-                return hotel;
+                return hotels;
             }
             catch (Exception e)
             {

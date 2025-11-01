@@ -1,12 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 {
+    [ApiController]
+    [Route("/api/bookings")]
+    [ApiVersion("1.0")]
     public class BookingsController : Controller
     {
-        public IActionResult Index()
+        private readonly IMediator _mediator;
+        private readonly ILogger<BookingsController> _logger;
+
+        public BookingsController(IMediator mediator, ILogger<BookingsController> logger)
         {
-            return View();
+            _mediator = mediator;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FindBookingByReference(string bookingReference)
+        {
+            return Ok();
         }
     }
 }
