@@ -21,7 +21,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         }
 
         /// <summary>
-        /// Given a hotel name, retrieves a list of hotels that match the provided name.
+        /// Given a hotel name, retrieves a list of hotels that contain the provided string. I've gone with this approach since the requirement "Find a hotel based on its name" was somewhat open to interpretation.
         /// </summary>
         /// <param name="name">The hotel name to search with</param>
         /// <returns>

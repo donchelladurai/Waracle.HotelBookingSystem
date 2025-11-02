@@ -23,7 +23,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <summary>
         /// Returns a list of all available rooms within the specified date range and for the specified number of occupants.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="checkInDate">The check in date. The UK format DD/MM/YYYY is acceptable</param>
+        /// <param name="checkOutDate">The check out date. The UK format DD/MM/YYYY is acceptable</param>
+        /// <param name="numberOfOccupants">The number of occupants (The largest room accommodates up to 4 people)</param>
         /// <returns>A list of RoomDto objects</returns>
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]

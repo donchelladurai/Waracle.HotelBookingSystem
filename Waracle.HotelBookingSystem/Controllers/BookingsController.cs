@@ -14,6 +14,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
     [ApiController]
     [Route("/api/bookings")]
     [ApiVersion("1.0")]
+    /// <summary>
+    /// A controller for managing bookings.
+    /// </summary>
     public class BookingsController : Controller
     {
         private readonly IMediator _mediator;
@@ -25,11 +28,11 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
         /// <summary>
-        /// Get a list of all bookings.
+        /// Get a list of all bookings. I've included this so that getting the booking reference to test api/bookings/bookingReference is easier.
         /// </summary>
         /// <returns>A list of BookingDto objects containing booking data</returns>
+        [HttpGet]
         public async Task<IActionResult> GetAllBookingsAsync()
         {
             try
@@ -51,9 +54,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         }
 
         /// <summary>
-        /// Returns a booking based on the provided booking reference.
+        /// Returns a booking based on the provided booking reference. The largest room accommodates up to 4 people.
         /// </summary>
-        /// <param name="bookingReference">The booking reference</param>
+        /// <param name="bookingReference">The booking reference (You can get the booking reference either from the response from [HttpPost] api/bookings or from [HttpGet] api/bookings)</param>
         /// <returns>HTTP 200 if a booking exists along with the booking data, HTTP 404 if not.</returns>
         [HttpGet("bookingReference")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -88,9 +91,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         }
 
         /// <summary>
-        /// Creates a new booking based on the provided booking details.
+        /// Creates a new booking based on the provided booking details. You can get the HotelId and RoomId from the /api/rooms endpoint.
         /// </summary>
-        /// <param name="model">The <see cref="CreateBookingModel"/> create booking model</param>
+        /// <param name="model">Note: The date fields accept the UK format DD/MM/YYYY just fine</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
