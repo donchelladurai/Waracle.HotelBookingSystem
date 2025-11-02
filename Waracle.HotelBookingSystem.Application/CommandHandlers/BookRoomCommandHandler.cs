@@ -14,7 +14,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
     /// <summary>
     /// The command handler responsible for processing room booking requests.
     /// </summary>
-    public class BookRoomCommandHandler : IRequestHandler<BookRoomCommand, Booking>
+    public class BookRoomCommandHandler : IRequestHandler<BookRoomCommand, bool>
     {
         private readonly IBookingsRepository _bookingsRepository;
         private readonly IRoomsRepository _roomsRepository;
@@ -45,61 +45,54 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         /// <summary>
         /// Handles the booking of a room by creating a new booking record.
         /// </summary>
-        /// <param name="request">The command request containing details of the room booking.</param>
+        /// <param name="command">The command request containing details of the room booking.</param>
         /// <param name="cancellationToken">A cancellation token that can be used to cancel the booking operation.</param>
         /// <returns>A <see cref="Booking"/> object representing the newly created booking.</returns>
-        public async Task<Booking> Handle(BookRoomCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(BookRoomCommand command, CancellationToken cancellationToken)
         {
-            await CheckForArgumentExceptions(request, cancellationToken).ConfigureAwait(false);
+            await CheckForArgumentExceptions(command, cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation($"Starting booking process for room {request.Room.Id} from {request.CheckInDate} to {request.CheckOutDate}.");
+            _logger.LogInformation($"Starting booking process for room {command.RoomId} from {command.CheckInDate} to {command.CheckOutDate}.");
 
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var allRooms = await _roomsRepository
-                    .GetAllAsync(cancellationToken).ConfigureAwait(false);
+                var allRooms = await _roomsRepository.GetByHotelIdAsync(command.HotelId, cancellationToken).ConfigureAwait(false);
 
-                var availableRooms = allRooms.GetAvailableRooms(request.NumberOfGuests, request.CheckInDate, request.CheckOutDate);
+                var availableRooms = allRooms.GetAvailableRooms(command.NumberOfGuests, command.CheckInDate, command.CheckOutDate);
 
-                if (!availableRooms.Any(r => r.Id == request.Room.Id))
+                if (!availableRooms.Any(r => r.Id == command.RoomId))
                 {
-                    _logger.LogError($"Room {request.Room.Id} is not available from {request.CheckInDate} to {request.CheckOutDate}.");
+                    _logger.LogError($"Room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}.");
 
                     throw new InvalidOperationException("The selected room is not available for the specified dates.");
                 }
 
-                var booking = new Booking
+                var booking = new Booking()
                 {
-                    Room = request.Room,
-                    CheckInDate = request.CheckInDate,
-                    CheckOutDate = request.CheckOutDate,
-                    NumberOfGuests = request.NumberOfGuests
+                    Reference = GenerateBookingReference(),
+                    Room = availableRooms.Single(r => r.Id == command.RoomId),
+                    CheckInDate = command.CheckInDate.ToUniversalTime(),
+                    CheckOutDate = command.CheckOutDate.ToUniversalTime(),
+                    NumberOfGuests = command.NumberOfGuests
                 };
 
-                if (await IsRoomAvailable(request.Room.Id, request.CheckInDate, request.CheckOutDate, cancellationToken))
-                {
-                    booking.Reference = GenerateBookingReference();
+                await _bookingsRepository.CreateAsync(booking, cancellationToken).ConfigureAwait(false);
 
-                    await _bookingsRepository.CreateAsync(booking, cancellationToken).ConfigureAwait(false);
+                _logger.LogInformation($"Booking created successfully for room {command.RoomId}.");
 
-                    _logger.LogInformation($"Booking created successfully for room {request.Room.Id}.");
-
-                    return booking;
-                }
-                 
-                throw new Exception("Room not available");
+                return true;
             }
             catch (OperationCanceledException)
             {
-                _logger.LogWarning($"Booking operation for room {request.Room} was cancelled.");
+                _logger.LogWarning($"Booking operation for room {command.RoomId} was cancelled.");
 
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while booking room {Room}.", request.Room);
+                _logger.LogError(ex, "Error occurred while booking room {Room}.", command.RoomId);
 
                 throw;
             }
@@ -108,7 +101,6 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         private async Task CheckForArgumentExceptions(BookRoomCommand command, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(command);
-            ArgumentNullException.ThrowIfNull(command.Room);
             ArgumentNullException.ThrowIfNull(cancellationToken);
 
             if (command.NumberOfGuests <= 0)
@@ -116,13 +108,6 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
                 _logger.LogError($"Number of guests {command.NumberOfGuests} is not valid.");
 
                 throw new ArgumentOutOfRangeException("Number of guests must be greater than zero.");
-            }
-
-            if (command.NumberOfGuests > command.Room.RoomType.Capacity)
-            {
-                _logger.LogError($"Number of guests {command.NumberOfGuests} exceeds room capacity {command.Room.RoomType.Capacity}.");
-
-                throw new ArgumentException("Number of guests exceeds room capacity.");
             }
 
             if (command.IsCheckoutDateAfterCheckInDate() == false)
@@ -140,11 +125,11 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
                 throw new ArgumentException($"HotelId {command.HotelId} does not exist.");
             }
 
-            if (hotel.Rooms.All(r => r.Id != command.Room.Id))
+            if (hotel.Rooms.All(r => r.Id != command.RoomId))
             {
-                _logger.LogError($"Room with Id {command.Room.Id} does not exist in Hotel with Id {command.HotelId}.");
+                _logger.LogError($"Room with Id {command.RoomId} does not exist in Hotel with Id {command.HotelId}.");
 
-                throw new ArgumentException($"RoomId {command.Room.Id} does not exist in Hotel with Id {command.HotelId}.");
+                throw new ArgumentException($"RoomId {command.RoomId} does not exist in Hotel with Id {command.HotelId}.");
             }
         }
 
@@ -155,26 +140,12 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         private string GenerateBookingReference()
         {
             DateTime now = DateTime.UtcNow;
-            string datePart = now.ToString("yyyyMMdd-HHmmss");
+            string datePart = now.ToString("yyyyMMddHHmmss");
 
-            long uniqueId = Interlocked.Increment(ref _counter);
-            string idPart = uniqueId.ToString("D3");
+            long counter = Interlocked.Increment(ref _counter);
+            string counterPart = counter.ToString("D3");
 
-            return $"{datePart}-{idPart}";
-        }
-
-        private async Task<bool> IsRoomAvailable(int roomId, DateTime checkIn, DateTime checkOut, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var res = await _bookingsRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
-
-                return !res.Any(b => b.RoomId == roomId && (b.CheckInDate < checkOut && b.CheckOutDate > checkIn));
-            }
-            catch (Exception e)
-            {
-                throw new Exception("An error occurred while checking room availability", e);
-            }
+            return $"{datePart}-{counterPart}";
         }
     }
 }

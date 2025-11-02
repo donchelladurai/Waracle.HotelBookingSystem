@@ -53,6 +53,7 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
                 return availableRooms.Select(ar => new RoomDto()
                 {
                     RoomId = ar.Id,
+                    HotelId = ar.HotelId,
                     HotelName = ar.Hotel.Name,
                     RoomTypeName = ar.RoomType.Name,
                     Capacity = ar.RoomType.Capacity

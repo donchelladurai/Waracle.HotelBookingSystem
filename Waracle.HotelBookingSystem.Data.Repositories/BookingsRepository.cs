@@ -37,6 +37,10 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Bookings
+                    .Include(b => b.Room)
+                        .ThenInclude(r => r.RoomType)
+                    .Include(b => b.Room)
+                        .ThenInclude(r => r.Hotel)
                 .ToListAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException e)
@@ -64,7 +68,11 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Bookings
-                .FirstOrDefaultAsync(booking => booking.Reference == bookingReference, cancellationToken).ConfigureAwait(false);
+                            .Include(b => b.Room)
+                               .ThenInclude(r => r.RoomType)
+                            .Include(b => b.Room)
+                                .ThenInclude(r => r.Hotel)
+                            .FirstOrDefaultAsync(booking => booking.Reference == bookingReference, cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException e)
             {
