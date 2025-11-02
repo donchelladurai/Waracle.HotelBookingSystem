@@ -32,6 +32,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Bookings
@@ -56,6 +58,9 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNullOrEmpty(bookingReference);
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Bookings
@@ -79,10 +84,16 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(booking);
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+                
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await _azureSqlHbsDbContext.Bookings.AddAsync(booking, cancellationToken).ConfigureAwait(false);
-                await _azureSqlHbsDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                if (booking.IsValid())
+                {
+                    await _azureSqlHbsDbContext.Bookings.AddAsync(booking, cancellationToken).ConfigureAwait(false);
+                    await _azureSqlHbsDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException e)
             {
@@ -91,6 +102,32 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             catch (Exception exception)
             {
                 throw new Exception("An error occurred while creating a new booking.", exception);
+            }
+        }
+
+        /// <summary>
+        /// Removes all Bookings
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        public async Task RemoveAllAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                _azureSqlHbsDbContext.Bookings.RemoveRange(_azureSqlHbsDbContext.Bookings);
+
+                await _azureSqlHbsDbContext.SaveChangesAsync();
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to remove all bookings was cancelled.", e, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while removing all bookings", e);
             }
         }
     }

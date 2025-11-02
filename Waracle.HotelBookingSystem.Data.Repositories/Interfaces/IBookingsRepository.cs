@@ -30,5 +30,11 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <param name="booking">The booking</param>
         /// <param name="cancellationToken">The cancellation token</param>
         Task CreateAsync(Booking booking, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Removes all bookings
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task RemoveAllAsync(CancellationToken cancellationToken);
     }
 }

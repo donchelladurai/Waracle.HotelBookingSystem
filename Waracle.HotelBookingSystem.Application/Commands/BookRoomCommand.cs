@@ -8,7 +8,7 @@ using Waracle.HotelBookingSystem.Domain.Entities;
 
 namespace Waracle.HotelBookingSystem.Application.Commands
 {
-    public class BookRoomCommand : IRequest<Booking>
+    public record BookRoomCommand : IRequest<Booking>
     {
         public BookRoomCommand(int hotelId, Room room, DateTime checkInDate, DateTime checkOutDate, int numberOfGuests)
         {

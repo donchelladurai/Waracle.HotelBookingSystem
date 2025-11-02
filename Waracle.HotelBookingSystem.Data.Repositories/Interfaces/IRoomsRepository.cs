@@ -21,5 +21,11 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// </summary>
         /// <returns>A list of rooms</returns>
         Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Removes all rooms
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task RemoveAllAsync(CancellationToken cancellationToken);
     }
 }

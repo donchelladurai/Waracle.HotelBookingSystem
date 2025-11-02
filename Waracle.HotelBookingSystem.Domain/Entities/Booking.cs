@@ -15,5 +15,12 @@ namespace Waracle.HotelBookingSystem.Domain.Entities
         public DateTime CheckOutDate { get; set; }
         public int? NumberOfGuests { get; set; }
         public required Room Room { get; set; }
+
+        public bool IsValid()
+        {
+            return CheckInDate < CheckOutDate
+                && NumberOfGuests > 0
+                && !string.IsNullOrEmpty(Reference);
+        }
     }
 }

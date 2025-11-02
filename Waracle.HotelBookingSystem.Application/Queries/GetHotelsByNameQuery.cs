@@ -14,7 +14,7 @@ namespace Waracle.HotelBookingSystem.Application.Queries
     /// </summary>
     /// <remarks>This query is used to find a specific hotel based on the provided name. It implements the
     /// <see cref="IRequest{TResponse}"/> interface, where TResponse is a <see cref="Hotel"/>.</remarks>
-    public class GetHotelsByNameQuery : IRequest<IEnumerable<HotelDto>>
+    public record GetHotelsByNameQuery : IRequest<IEnumerable<HotelDto>>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetHotelsByNameQuery"/> class with the specified hotel name.

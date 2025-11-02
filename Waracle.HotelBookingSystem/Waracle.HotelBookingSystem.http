@@ -1,6 +1,6 @@
 @Waracle.HotelBookingSystem_HostAddress = http://localhost:5175
 
-GET {{Waracle.HotelBookingSystem_HostAddress}}/weatherforecast/
+GET {{Waracle.HotelBookingSystem_HostAddress}}/hotels/
 Accept: application/json
 
 ###

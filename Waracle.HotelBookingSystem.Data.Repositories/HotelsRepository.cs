@@ -48,6 +48,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 if (hotels.Any())
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -77,6 +79,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Hotels
@@ -105,6 +109,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var hotels = await _azureSqlHbsDbContext.Hotels
@@ -135,6 +141,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Hotels
@@ -154,39 +162,28 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         }
 
         /// <summary>
-        /// Seeds the database with test data for hotels and their rooms if no hotels currently exist.
+        /// Removes all hotels
         /// </summary>
-        /// <remarks>This method adds a predefined set of hotels and associated rooms to the database.  It
-        /// checks if the database is empty before seeding to prevent duplicate entries.</remarks>
-        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-        /// <returns></returns>
-        /// <exception cref="Exception">Thrown if an error occurs during the seeding process.</exception>
-        public async Task SeedTestDataAsync(CancellationToken cancellationToken)
+        /// <param name="cancellationToken"></param>
+        public async Task RemoveAllAsync(CancellationToken cancellationToken)
         {
             try
             {
-                if (!_azureSqlHbsDbContext.Hotels.Any())
-                {
-                    foreach (var hotelName in _hotelNamesSeedData)
-                    {
-                        var hotel = new Hotel { Name = hotelName };
+                ArgumentNullException.ThrowIfNull(cancellationToken);
 
-                        hotel.Rooms.Add(new Room { RoomTypeId = 1 });
-                        hotel.Rooms.Add(new Room { RoomTypeId = 1 });
-                        hotel.Rooms.Add(new Room { RoomTypeId = 2 });
-                        hotel.Rooms.Add(new Room { RoomTypeId = 2 });
-                        hotel.Rooms.Add(new Room { RoomTypeId = 3 });
-                        hotel.Rooms.Add(new Room { RoomTypeId = 3 });
+                cancellationToken.ThrowIfCancellationRequested();
 
-                        _azureSqlHbsDbContext.Hotels.Add(hotel);
-                    }
+                _azureSqlHbsDbContext.Hotels.RemoveRange(_azureSqlHbsDbContext.Hotels);
 
-                    await _azureSqlHbsDbContext.SaveChangesAsync();
-                }
+                await _azureSqlHbsDbContext.SaveChangesAsync();
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to remove all hotels was cancelled.", e, cancellationToken);
             }
             catch (Exception e)
             {
-                throw new Exception("An error occurred while seeding test data", e);
+                throw new Exception("An error occurred while removing all hotels", e);
             }
         }
 

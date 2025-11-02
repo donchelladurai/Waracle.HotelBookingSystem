@@ -24,13 +24,19 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// Given a hotel name, retrieves a list of hotels that match the provided name.
         /// </summary>
         /// <param name="name">The hotel name to search with</param>
-        /// <returns>A list of hotels that match the name or HTTP 204 if no matches</returns>
-        [HttpGet("{name}")]
+        /// <returns>
+        /// A list of hotels that match the name or HTTP 204 if no matches
+        /// - 200 OK: If any hotels are found.
+        /// - 400 Bad Request: If the hotel name is null or empty.
+        /// - 404 Not Found: If no hotels are found with the given name.
+        /// - 500 Internal Server Error: If an error occurs.
+        /// </returns>
+        [HttpGet("{name}", Name = "GetHotelsByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<HotelDto>> GetByName(string name)
+        public async Task<ActionResult<HotelDto>> GetByNameAsync(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -43,7 +49,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 
                 if (hotels == null || !hotels.Any())
                 {
-                    return NoContent();
+                    return NotFound($"No hotels were found with the name {name}");
                 }
 
                 return Ok(hotels);

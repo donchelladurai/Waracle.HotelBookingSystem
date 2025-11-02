@@ -18,7 +18,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FindBookingByReference(string bookingReference)
+        public async Task<IActionResult> FindBookingByReferenceAsync(string bookingReference)
         {
             return Ok();
         }

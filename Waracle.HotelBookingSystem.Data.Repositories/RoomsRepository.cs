@@ -32,6 +32,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Rooms
@@ -58,6 +60,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Rooms
@@ -72,6 +76,32 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             catch (Exception exception)
             {
                 throw new Exception("An error occurred while retrieving all rooms", exception);
+            }
+        }
+
+        /// <summary>
+        /// Removes all Rooms
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        public async Task RemoveAllAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                ArgumentNullException.ThrowIfNull(cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                _azureSqlHbsDbContext.Rooms.RemoveRange(_azureSqlHbsDbContext.Rooms);
+
+                await _azureSqlHbsDbContext.SaveChangesAsync();
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to remove all rooms was cancelled.", e, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while removing all rooms", e);
             }
         }
     }

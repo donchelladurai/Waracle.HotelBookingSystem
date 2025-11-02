@@ -38,5 +38,11 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <param name="hotels">The list of htoels to add</param>
         /// <param name="cancellationToken"></param>
         Task CreateAsync(IEnumerable<Hotel> hotels, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Removes all hotels
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task RemoveAllAsync(CancellationToken cancellationToken);
     }
 }

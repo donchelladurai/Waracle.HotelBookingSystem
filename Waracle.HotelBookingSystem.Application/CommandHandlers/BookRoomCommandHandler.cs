@@ -115,7 +115,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
             {
                 _logger.LogError($"Number of guests {command.NumberOfGuests} is not valid.");
 
-                throw new ArgumentException("Number of guests must be greater than zero.");
+                throw new ArgumentOutOfRangeException("Number of guests must be greater than zero.");
             }
 
             if (command.NumberOfGuests > command.Room.RoomType.Capacity)

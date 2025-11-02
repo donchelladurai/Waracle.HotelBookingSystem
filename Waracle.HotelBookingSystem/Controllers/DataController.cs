@@ -18,12 +18,19 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             _logger = logger;
         }
 
-
+        /// <summary>
+        /// Seeds the database with test data.
+        /// </summary>
+        /// <returns>
+        /// True if data was seeded, false if data already exists.
+        /// - 200 OK: If data seeding was successful or data already exists.
+        /// - 500 Internal Server Error: If an error occurs.
+        /// </returns>
         [Route("seed")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<bool>> SeedData()
+        public async Task<ActionResult<bool>> SeedDataAsync()
         {
             try
             {
@@ -44,15 +51,25 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             }
         }
 
-        [Route("reset")]
+        /// <summary>
+        /// Clears all transactional data in the database.
+        /// </summary>
+        /// <returns>
+        /// True if data was cleared successfully. False otherwise.
+        /// 200 OK: If data clearing was successful.
+        /// 500 Internal Server Error: If an error occurs.
+        /// </returns>
+        [Route("clear")]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<bool>> ResetAllTransactionalData()
+        public async Task<ActionResult<bool>> ClearAllTransactionalDataAsync()
         {
             try
             {
-                return Ok(true);
+                await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.ClearAllTransactionalDataCommand()).ConfigureAwait(false);
+
+                return Ok("All transactional data has been cleared successfully");
             }
             catch (Exception e)
             {

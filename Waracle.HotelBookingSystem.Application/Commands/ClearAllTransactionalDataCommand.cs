@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Waracle.HotelBookingSystem.Domain.Entities;
+using System.Windows.Input;
 
 namespace Waracle.HotelBookingSystem.Application.Commands
 {
-    public record SeedDataCommand : IRequest<bool>
+    public record ClearAllTransactionalDataCommand : IRequest
     {
     }
 }
