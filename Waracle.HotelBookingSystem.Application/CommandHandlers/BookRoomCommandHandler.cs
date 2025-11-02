@@ -4,6 +4,7 @@ using System.Diagnostics.Metrics;
 using System.Threading;
 using Waracle.HotelBookingSystem.Application.Commands;
 using Waracle.HotelBookingSystem.Application.Helpers;
+using Waracle.HotelBookingSystem.Common;
 using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Domain.Entities;
@@ -14,7 +15,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
     /// <summary>
     /// The command handler responsible for processing room booking requests.
     /// </summary>
-    public class BookRoomCommandHandler : IRequestHandler<BookRoomCommand, bool>
+    public class BookRoomCommandHandler : IRequestHandler<BookRoomCommand, BookRoomCommandResult>
     {
         private readonly IBookingsRepository _bookingsRepository;
         private readonly IRoomsRepository _roomsRepository;
@@ -47,8 +48,8 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         /// </summary>
         /// <param name="command">The command request containing details of the room booking.</param>
         /// <param name="cancellationToken">A cancellation token that can be used to cancel the booking operation.</param>
-        /// <returns>A <see cref="Booking"/> object representing the newly created booking.</returns>
-        public async Task<bool> Handle(BookRoomCommand command, CancellationToken cancellationToken)
+        /// <returns>A <see cref="BookRoomCommandResult"/> object representing the changed state.</returns>
+        public async Task<BookRoomCommandResult> Handle(BookRoomCommand command, CancellationToken cancellationToken)
         {
             await CheckForArgumentExceptions(command, cancellationToken).ConfigureAwait(false);
 
@@ -82,7 +83,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
 
                 _logger.LogInformation($"Booking created successfully for room {command.RoomId}.");
 
-                return true;
+                return new BookRoomCommandResult(true, booking.Reference);
             }
             catch (OperationCanceledException)
             {

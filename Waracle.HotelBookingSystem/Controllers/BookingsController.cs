@@ -107,9 +107,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 
             try
             {
-                var isBookingSuccessful = await _mediator.Send(new BookRoomCommand(model.HotelId, model.RoomId, model.CheckInDate, model.CheckOutDate, model.NumberOfGuests)).ConfigureAwait(false);
+                var commandResult = await _mediator.Send(new BookRoomCommand(model.HotelId, model.RoomId, model.CheckInDate, model.CheckOutDate, model.NumberOfGuests)).ConfigureAwait(false);
 
-                if(!isBookingSuccessful)
+                if(commandResult.IsSucessful is false)
                 {
                     return StatusCode(
                     500,
@@ -119,7 +119,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                     });
                 }
 
-                return Ok($"The booking was successful");
+                return Ok($"The booking was created with Booking Reference {commandResult.BookingReference}");
             }
             catch (Exception ex)
             {
