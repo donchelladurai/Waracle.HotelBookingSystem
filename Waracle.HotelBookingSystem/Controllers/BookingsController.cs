@@ -94,7 +94,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <summary>
         /// Creates a new booking based on the provided booking details. You can get the HotelId and RoomId from the /api/rooms endpoint.
         /// </summary>
-        /// <param name="model">Note: The date fields accept the ISO format YYYY-MM-DD</param>
+        /// <param name="model">The date fields accept the ISO format YYYY-MM-DD</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
