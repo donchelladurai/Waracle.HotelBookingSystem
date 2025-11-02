@@ -40,6 +40,34 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         }
 
         /// <summary>
+        /// Creates a hotel
+        /// </summary>
+        /// <param name="hotels">The list of htoels to add</param>
+        /// <param name="cancellationToken"></param>
+        public async Task CreateAsync(IEnumerable<Hotel> hotels, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (hotels.Any())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await _azureSqlHbsDbContext.Hotels.AddRangeAsync(hotels);
+                    await _azureSqlHbsDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to get hotel by Id was cancelled.", e, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving the hotel by Id", e);
+            }
+        }
+
+
+        /// <summary>
         /// Gets a hotel by its hotel id
         /// </summary>
         /// <param name="hotelId">The hotel Id</param>
@@ -95,6 +123,33 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             catch (Exception e)
             {
                 throw new Exception("An error occurred while retrieving the hotel by name", e);
+            }
+        }
+
+        /// <summary>
+        /// Get all hotels
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A list of all hotels</returns>
+        public async Task<IEnumerable<Hotel>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return await _azureSqlHbsDbContext.Hotels
+                    .AsNoTracking()
+                    .Include(h => h.Rooms)
+                    .ToListAsync(cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new OperationCanceledException("The operation to get all hotels was cancelled.", e, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving all hotels", e);
             }
         }
 

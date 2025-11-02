@@ -19,14 +19,17 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         }
 
 
-        [HttpGet]
+        [Route("seed")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<bool>> SeedData()
         {
             try
             {
-                return Ok(true);
+                var result = await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.SeedDataCommand()).ConfigureAwait(false);
+
+                return Ok(result ? "The data seeding was successful" : "The data already seems to be seeded");
             }
             catch (Exception e)
             {
@@ -41,6 +44,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             }
         }
 
+        [Route("reset")]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

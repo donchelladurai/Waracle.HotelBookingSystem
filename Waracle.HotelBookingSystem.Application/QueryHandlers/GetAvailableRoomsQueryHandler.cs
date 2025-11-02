@@ -30,6 +30,7 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
         public async Task<IEnumerable<RoomDto>> Handle(GetAvailableRoomsQuery request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(cancellationToken);
 
             if (request.NumberOfGuests <= 0)
             {

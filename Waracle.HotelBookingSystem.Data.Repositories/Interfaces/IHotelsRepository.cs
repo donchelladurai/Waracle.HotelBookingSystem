@@ -10,6 +10,13 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
     public interface IHotelsRepository
     {
         /// <summary>
+        /// Get all hotels
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A list of all hotels</returns>
+        Task<IEnumerable<Hotel>> GetAllAsync(CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets a hotel by its hotel id
         /// </summary>
         /// <param name="hotelId">The hotel Id</param>
@@ -24,5 +31,12 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A hotel that contains the given name</returns>
         Task<IEnumerable<Hotel>> GetByNameAsync(string name, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates a hotel
+        /// </summary>
+        /// <param name="hotels">The list of htoels to add</param>
+        /// <param name="cancellationToken"></param>
+        Task CreateAsync(IEnumerable<Hotel> hotels, CancellationToken cancellationToken);
     }
 }

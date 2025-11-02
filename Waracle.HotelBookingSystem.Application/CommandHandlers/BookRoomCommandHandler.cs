@@ -105,45 +105,46 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
             }
         }
 
-        private async Task CheckForArgumentExceptions(BookRoomCommand request, CancellationToken cancellationToken)
+        private async Task CheckForArgumentExceptions(BookRoomCommand command, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(request);
-            ArgumentNullException.ThrowIfNull(request.Room);
+            ArgumentNullException.ThrowIfNull(command);
+            ArgumentNullException.ThrowIfNull(command.Room);
+            ArgumentNullException.ThrowIfNull(cancellationToken);
 
-            if (request.NumberOfGuests <= 0)
+            if (command.NumberOfGuests <= 0)
             {
-                _logger.LogError($"Number of guests {request.NumberOfGuests} is not valid.");
+                _logger.LogError($"Number of guests {command.NumberOfGuests} is not valid.");
 
                 throw new ArgumentException("Number of guests must be greater than zero.");
             }
 
-            if (request.NumberOfGuests > request.Room.RoomType.Capacity)
+            if (command.NumberOfGuests > command.Room.RoomType.Capacity)
             {
-                _logger.LogError($"Number of guests {request.NumberOfGuests} exceeds room capacity {request.Room.RoomType.Capacity}.");
+                _logger.LogError($"Number of guests {command.NumberOfGuests} exceeds room capacity {command.Room.RoomType.Capacity}.");
 
                 throw new ArgumentException("Number of guests exceeds room capacity.");
             }
 
-            if (request.IsCheckoutDateAfterCheckInDate() == false)
+            if (command.IsCheckoutDateAfterCheckInDate() == false)
             {
-                _logger.LogError($"Check out date {request.CheckOutDate} is not after check in date {request.CheckInDate}.");
+                _logger.LogError($"Check out date {command.CheckOutDate} is not after check in date {command.CheckInDate}.");
 
                 throw new ArgumentException("Check out date must be after check in date.");
             }
 
-            var hotel = await _hotelsRepository.GetByIdAsync(request.HotelId, cancellationToken).ConfigureAwait(false);
+            var hotel = await _hotelsRepository.GetByIdAsync(command.HotelId, cancellationToken).ConfigureAwait(false);
             if (hotel == null)
             {
-                _logger.LogError($"Hotel with Id {request.HotelId} does not exist.");
+                _logger.LogError($"Hotel with Id {command.HotelId} does not exist.");
 
-                throw new ArgumentException($"HotelId {request.HotelId} does not exist.");
+                throw new ArgumentException($"HotelId {command.HotelId} does not exist.");
             }
 
-            if (hotel.Rooms.All(r => r.Id != request.Room.Id))
+            if (hotel.Rooms.All(r => r.Id != command.Room.Id))
             {
-                _logger.LogError($"Room with Id {request.Room.Id} does not exist in Hotel with Id {request.HotelId}.");
+                _logger.LogError($"Room with Id {command.Room.Id} does not exist in Hotel with Id {command.HotelId}.");
 
-                throw new ArgumentException($"RoomId {request.Room.Id} does not exist in Hotel with Id {request.HotelId}.");
+                throw new ArgumentException($"RoomId {command.Room.Id} does not exist in Hotel with Id {command.HotelId}.");
             }
         }
 
