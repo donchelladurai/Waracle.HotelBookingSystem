@@ -30,8 +30,14 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAvailableRoomsAsync(GetAvailableRoomsModel model)
+        public async Task<IActionResult> GetAvailableRoomsAsync(DateTime checkInDate, DateTime checkOutDate, int numberOfOccupants)
         {
+            var model = new GetAvailableRoomsModel
+            {
+                CheckInDate = checkInDate,
+                CheckOutDate = checkOutDate,
+                NumberOfOccupants = numberOfOccupants
+            };
             var validator = new GetAvailableRoomsModelValidator();
 
             var validationResult = await validator.ValidateAsync(model).ConfigureAwait(false);

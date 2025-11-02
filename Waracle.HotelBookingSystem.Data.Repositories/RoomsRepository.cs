@@ -66,6 +66,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
                 cancellationToken.ThrowIfCancellationRequested();
 
                 return await _azureSqlHbsDbContext.Rooms
+                            .Include(r => r.Hotel)
                             .Include(r => r.RoomType)
                             .Include(r => r.Bookings)
                                 .ToListAsync(cancellationToken)

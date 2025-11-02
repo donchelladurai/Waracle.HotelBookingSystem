@@ -19,8 +19,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         private readonly ILogger<SeedDataCommandHandler> _logger;
 
         private readonly List<string> _hotelNamesSeedData = [
-            "California",
-            "Novotel",
+            "Travelodge",
             "Premier Inn",
             "Holiday Inn",
             "Budget Inn",
