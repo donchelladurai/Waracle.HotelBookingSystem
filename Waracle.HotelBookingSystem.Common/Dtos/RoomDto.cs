@@ -11,7 +11,7 @@ namespace Waracle.HotelBookingSystem.Common.Dtos
         public int RoomId { get; set; }
         public int HotelId { get; set; }
         public string HotelName { get; set; }
-        public string RoomTypeName { get; set; }
+        public string RoomType { get; set; }
         public int Capacity { get; set; }
     }
 }

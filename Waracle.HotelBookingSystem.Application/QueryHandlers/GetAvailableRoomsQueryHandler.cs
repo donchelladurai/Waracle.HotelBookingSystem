@@ -55,7 +55,7 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
                     RoomId = ar.Id,
                     HotelId = ar.HotelId,
                     HotelName = ar.Hotel.Name,
-                    RoomTypeName = ar.RoomType.Name,
+                    RoomType = ar.RoomType.Name,
                     Capacity = ar.RoomType.Capacity
                 });
             }

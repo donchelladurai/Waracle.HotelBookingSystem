@@ -51,7 +51,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             {
                 var rooms = await _mediator.Send(new GetAvailableRoomsQuery(model.CheckInDate, model.CheckOutDate, model.NumberOfOccupants)).ConfigureAwait(false);
 
-                return rooms.Any() ? Ok(rooms) : NotFound($"No rooms were found between the dates {model.CheckInDate.ToShortDateString()} and {model.CheckOutDate.ToShortDateString()}");
+                return rooms.Any() ? Ok(rooms) : NotFound($"No rooms were found between the dates {model.CheckInDate.ToShortDateString()} and {model.CheckOutDate.ToShortDateString()} for {numberOfOccupants} occupants");
             }
             catch (Exception ex)
             {
