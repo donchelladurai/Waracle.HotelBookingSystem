@@ -73,7 +73,6 @@ namespace Waracle.HotelBookingSystem
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
-                options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
             });
 
             var app = builder.Build();
