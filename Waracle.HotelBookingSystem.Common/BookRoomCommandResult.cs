@@ -8,13 +8,15 @@ namespace Waracle.HotelBookingSystem.Common
 {
     public record BookRoomCommandResult
     {
-        public BookRoomCommandResult(bool isSucessful, string bookingReference)
+        public BookRoomCommandResult(bool isSuccessful, bool isRoomUnavailable, string bookingReference)
         {
-            IsSucessful = isSucessful;
+            IsSuccessful = isSuccessful;
             BookingReference = bookingReference;
+            IsRoomUnavailable = isRoomUnavailable;
         }
 
-        public bool IsSucessful { get; protected set; }
+        public bool IsSuccessful { get; protected set; }
+        public bool IsRoomUnavailable { get; protected set; }
         public string BookingReference { get; protected set; }
     }
 }

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Domain.Entities;
 
-namespace Waracle.HotelBookingSystem.Application.Helpers
+namespace Waracle.HotelBookingSystem.Common.Helpers
 {
-    public static class RoomsHelpers
+    public static class RoomsHelper
     {
         public static IEnumerable<Room> GetAvailableRooms(this IEnumerable<Room> rooms, int numberOfGuests, DateTime checkInDate, DateTime checkOutDate)
         {

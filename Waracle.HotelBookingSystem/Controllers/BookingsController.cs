@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using Waracle.HotelBookingSystem.Application.Commands;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
+using Waracle.HotelBookingSystem.Common.Helpers;
 using Waracle.HotelBookingSystem.Domain.Entities;
 using Waracle.HotelBookingSystem.Web.Api.Models;
 using Waracle.HotelBookingSystem.Web.Api.Validators;
@@ -93,7 +94,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <summary>
         /// Creates a new booking based on the provided booking details. You can get the HotelId and RoomId from the /api/rooms endpoint.
         /// </summary>
-        /// <param name="model">Note: The date fields accept the UK format DD/MM/YYYY just fine</param>
+        /// <param name="model">Note: The date fields accept the ISO format YYYY-MM-DD</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -112,14 +113,20 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             {
                 var commandResult = await _mediator.Send(new BookRoomCommand(model.HotelId, model.RoomId, model.CheckInDate, model.CheckOutDate, model.NumberOfGuests)).ConfigureAwait(false);
 
-                if(commandResult.IsSucessful is false)
+                //The selected room is not available for the specified dates.
+                if (commandResult.IsSuccessful is false)
                 {
-                    return StatusCode(
-                    500,
-                    new
+                    if (commandResult.IsRoomUnavailable)
                     {
-                        error = "An unexpected error occurred. The booking was not successful."
-                    });
+                        return Ok($"The selected room is not available for {model.NumberOfGuests} occupants between {model.CheckInDate.ToFormattedDateString()} and {model.CheckOutDate.ToFormattedDateString()}");
+                    }
+
+                    return StatusCode(
+                        500,
+                        new
+                        {
+                            error = "An unexpected error occurred. The booking was not successful."
+                        });
                 }
 
                 return Ok($"The booking was created with Booking Reference {commandResult.BookingReference}");

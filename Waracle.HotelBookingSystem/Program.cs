@@ -4,7 +4,6 @@ using Waracle.HotelBookingSystem.Application.QueryHandlers;
 using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
-using Waracle.HotelBookingSystem.Web.Api.ModelBinders;
 
 namespace Waracle.HotelBookingSystem
 {
@@ -44,10 +43,7 @@ namespace Waracle.HotelBookingSystem
                 builder.Logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("", LogLevel.Information);
             }
 
-            builder.Services.AddControllers(options =>
-            {
-                options.ModelBinderProviders.Insert(0, new BritishDateTimeModelBinderProvider());
-            });
+            builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

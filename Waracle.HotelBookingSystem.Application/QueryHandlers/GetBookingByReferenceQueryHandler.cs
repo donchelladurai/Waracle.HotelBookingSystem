@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
+using Waracle.HotelBookingSystem.Common.Helpers;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 
 namespace Waracle.HotelBookingSystem.Application.QueryHandlers
@@ -42,13 +43,13 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 
                 return new BookingDto
                 {
-                    Id = booking.Id,
+                    HotelId = booking.Room.HotelId,
                     RoomId = booking.RoomId,
                     HotelName = booking.Room.Hotel.Name,
                     RoomType = booking.Room.RoomType.Name,
                     BookingReference = booking.Reference,
-                    CheckInDate = booking.CheckInDate,
-                    CheckOutDate = booking.CheckOutDate,
+                    CheckInDate = booking.CheckInDate.ToFormattedDateString(),
+                    CheckOutDate = booking.CheckOutDate.ToFormattedDateString(),
                     NumberOfGuests = booking.NumberOfGuests.GetValueOrDefault()
                 };
             }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics.Metrics;
 using System.Threading;
 using Waracle.HotelBookingSystem.Application.Commands;
-using Waracle.HotelBookingSystem.Application.Helpers;
+using Waracle.HotelBookingSystem.Common.Helpers;
 using Waracle.HotelBookingSystem.Common;
 using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
@@ -67,7 +67,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
                 {
                     _logger.LogError($"Room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}.");
 
-                    throw new InvalidOperationException("The selected room is not available for the specified dates.");
+                    return new BookRoomCommandResult(false, true, string.Empty);
                 }
 
                 var booking = new Booking()
@@ -83,7 +83,7 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
 
                 _logger.LogInformation($"Booking created successfully for room {command.RoomId}.");
 
-                return new BookRoomCommandResult(true, booking.Reference);
+                return new BookRoomCommandResult(true, false, booking.Reference);
             }
             catch (OperationCanceledException)
             {

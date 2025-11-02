@@ -12,7 +12,7 @@ using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Domain.Entities;
 using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
-using Waracle.HotelBookingSystem.Application.Helpers;
+using Waracle.HotelBookingSystem.Common.Helpers;
 
 namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 {
