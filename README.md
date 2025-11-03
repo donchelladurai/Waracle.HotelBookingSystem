@@ -1,6 +1,15 @@
 # Hotel Booking API - By Don Chelladurai
   Don Chelladurai's solution for the "Backend Developer Challenge"
 
+## Build with
+- Visual Studio 2022
+- .NET 8.0
+- ASP.NET Core 5.0
+- EF Core 9.0
+- Azure SQL DB
+- Azure Application Insights
+- Hosted as an Azure APP Service
+
 ## Hosted On
 https://waracle-hotelbookingsystem-webapi-fjgpd5d5hwdrbxbt.canadacentral-01.azurewebsites.net/swagger
 
@@ -52,4 +61,5 @@ https://waracle-hotelbookingsystem-webapi-fjgpd5d5hwdrbxbt.canadacentral-01.azur
 - Moq
 - RestSharp
 - Newtonsoft.Json
+- Swagger
 
