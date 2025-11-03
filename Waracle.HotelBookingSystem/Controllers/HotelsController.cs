@@ -37,7 +37,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<HotelDto>> GetByNameAsync(string name, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetByNameAsync(string name, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(name))
             {
