@@ -28,7 +28,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             // Act
             var response =
                 await RestHttpClient.ExecuteGetAsync<BookingDto>(
-                    $"/api/bookings/reference?bookingReference={booking.BookingReference}");
+                    $"/api/bookings/{booking.BookingReference}");
 
             // Assert
             Assert.That((int)response.StatusCode == 200);

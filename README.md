@@ -28,7 +28,7 @@ https://waracle-hotelbookingsystem-webapi-fjgpd5d5hwdrbxbt.canadacentral-01.azur
 |--------|------------------------------------|---------------------------------------------|
 | GET    | /api/bookings                      | Get all bookings in the database       
 | POST   | /api/bookings                      | Book a room at a hotel              
-| GET    | /api/bookings/reference            | Get a booking using a booking reference
+| GET    | /api/bookings/{bookingReference}}  | Get a booking using a booking reference
 
 ### Hotels
 

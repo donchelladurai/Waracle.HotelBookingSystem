@@ -71,7 +71,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// 499 If operation is cancelled
         /// 500 Internal Server Error: If an error occurs.
         /// </returns>
-        [HttpGet("reference")]
+        [HttpGet("{bookingReference}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
