@@ -59,7 +59,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// </summary>
         /// <param name="bookingReference">The booking reference (You can get the booking reference either from the response from [HttpPost] api/bookings or from [HttpGet] api/bookings)</param>
         /// <returns>HTTP 200 if a booking exists along with the booking data, HTTP 404 if not.</returns>
-        [HttpGet("bookingReference")]
+        [HttpGet("reference")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
