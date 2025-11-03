@@ -76,7 +76,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             var response = await RestHttpClient.ExecutePostAsync<string>("/api/bookings", model);
 
             // Assert
-            Assert.That((int)response.StatusCode == 200, $"The selected room is not available for {booking.NumberOfGuests} occupants between {booking.CheckInDate} and {booking.CheckOutDate}");
+            Assert.That((int)response.StatusCode == 409, $"The selected room is not available for {booking.NumberOfGuests} occupants between {booking.CheckInDate} and {booking.CheckOutDate}");
         }
 
         [Test]
