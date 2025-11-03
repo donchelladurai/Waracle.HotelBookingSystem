@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Common", "Waracle.HotelBookingSystem.Common\Waracle.HotelBookingSystem.Common.csproj", "{2D5DD528-CFE3-4AE0-9178-D0D42B7C93C3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.AutomationTests", "Waracle.HotelBookingSystem.AutomationTests\Waracle.HotelBookingSystem.AutomationTests.csproj", "{43BE9433-CF28-4A7F-9510-67FEB6343FA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,9 +49,16 @@ Global
 		{2D5DD528-CFE3-4AE0-9178-D0D42B7C93C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D5DD528-CFE3-4AE0-9178-D0D42B7C93C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D5DD528-CFE3-4AE0-9178-D0D42B7C93C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43BE9433-CF28-4A7F-9510-67FEB6343FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43BE9433-CF28-4A7F-9510-67FEB6343FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43BE9433-CF28-4A7F-9510-67FEB6343FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43BE9433-CF28-4A7F-9510-67FEB6343FA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{43BE9433-CF28-4A7F-9510-67FEB6343FA5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0F952C4F-0926-4DD5-A014-284DE93326DF}
