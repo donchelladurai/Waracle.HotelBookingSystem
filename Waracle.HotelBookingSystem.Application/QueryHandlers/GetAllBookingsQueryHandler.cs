@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
 using Waracle.HotelBookingSystem.Common.Helpers;
+using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 
 namespace Waracle.HotelBookingSystem.Application.QueryHandlers
@@ -19,8 +20,8 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 
         public GetAllBookingsQueryHandler(IBookingsRepository bookingsRepository, ILogger<GetAllBookingsQueryHandler> logger)
         {
-            _bookingsRepository = bookingsRepository;
-            _logger = logger;
+            _bookingsRepository = bookingsRepository ?? throw new ArgumentNullException(nameof(bookingsRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<BookingDto>> Handle(GetAllBookingsQuery request, CancellationToken cancellationToken)

@@ -19,8 +19,8 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 
         public GetBookingByReferenceQueryHandler(IBookingsRepository bookingsRepository, ILogger<GetBookingByReferenceQueryHandler> logger)
         {
-            _bookingsRepository = bookingsRepository;
-            _logger = logger;
+            _bookingsRepository = bookingsRepository ?? throw new ArgumentNullException(nameof(bookingsRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<BookingDto?> Handle(GetBookingByReferenceQuery request, CancellationToken cancellationToken)
