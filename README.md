@@ -46,10 +46,10 @@ https://waracle-hotelbookingsystem-webapi-fjgpd5d5hwdrbxbt.canadacentral-01.azur
   Monday!2E
 
 ## Third Party Dependencies
-Mediatr
-FluentValidation
-NUnit
-Moq
-RestSharp
-Newtonsoft.Json
+- Mediatr
+- FluentValidation
+- NUnit
+- Moq
+- RestSharp
+- Newtonsoft.Json
 
