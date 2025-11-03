@@ -65,7 +65,12 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// Returns a booking based on the provided booking reference. The largest room accommodates up to 4 people.
         /// </summary>
         /// <param name="bookingReference">The booking reference (You can get the booking reference either from the response from [HttpPost] api/bookings or from [HttpGet] api/bookings)</param>
-        /// <returns>HTTP 200 if a booking exists along with the booking data, HTTP 404 if not.</returns>
+        /// <returns>
+        /// HTTP 200 if a booking exists along with the booking data, HTTP 404 if not.
+        /// 400 if the booking reference is invalid
+        /// 499 If operation is cancelled
+        /// 500 Internal Server Error: If an error occurs.
+        /// </returns>
         [HttpGet("reference")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -115,6 +120,12 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// Creates a new booking based on the provided booking details. You can get the HotelId and RoomId from the /api/rooms endpoint.
         /// </summary>
         /// <param name="model">The date fields accept the ISO format YYYY-MM-DD</param>
+        /// <returns>
+        /// 200 OK: If booking was successful.
+        /// 409 If the selected room is not available for the specified dates.
+        /// 499 If operation is cancelled
+        /// 500 Internal Server Error: If an error occurs.
+        /// </returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

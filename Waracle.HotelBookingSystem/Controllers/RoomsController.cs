@@ -26,7 +26,14 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <param name="checkInDate">The check in date in ISO format YYYY/MM/DD</param>
         /// <param name="checkOutDate">The check out date in ISO format YYYY/MM/DD</param>
         /// <param name="numberOfOccupants">The number of occupants (The largest room accommodates up to 4 people)</param>
-        /// <returns>A list of RoomDto objects</returns>
+        /// <returns>
+        /// A list of RoomDto objects
+        /// - 200 OK: If any rooms are found.
+        /// - 400 Bad Request: If the input parameters are invalid.
+        /// - 404 Not Found: If no rooms are found for the given criteria.
+        /// - 499 If operation is cancelled
+        /// - 500 Internal Server Error: If an error occurs.
+        /// </returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

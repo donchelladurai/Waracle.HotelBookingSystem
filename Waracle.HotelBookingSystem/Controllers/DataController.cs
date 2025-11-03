@@ -22,7 +22,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// </summary>
         /// <returns>
         /// True if data was seeded, false if data already exists.
-        /// - 200 OK: If data seeding was successful or data already exists.
+        /// - 200 OK: If data seeding was successful.
+        /// - 409 If data already exists
+        /// - 499 If operation is cancelled
         /// - 500 Internal Server Error: If an error occurs.
         /// </returns>
         [Route("seed")]
@@ -69,6 +71,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <returns>
         /// True if data was cleared successfully. False otherwise.
         /// 200 OK: If data clearing was successful.
+        /// 499 If operation is cancelled
         /// 500 Internal Server Error: If an error occurs.
         /// </returns>
         [Route("clear")]

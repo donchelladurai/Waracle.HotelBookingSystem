@@ -27,6 +27,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// - 200 OK: If any hotels are found.
         /// - 400 Bad Request: If the hotel name is null or empty.
         /// - 404 Not Found: If no hotels are found with the given name.
+        /// - 499 If operation is cancelled
         /// - 500 Internal Server Error: If an error occurs.
         /// </returns>
         [HttpGet("{name}", Name = "GetHotelsByName")]
