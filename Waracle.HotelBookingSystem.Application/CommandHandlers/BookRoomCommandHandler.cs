@@ -1,14 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.Metrics;
-using System.Threading;
 using Waracle.HotelBookingSystem.Application.Commands;
 using Waracle.HotelBookingSystem.Common.Helpers;
 using Waracle.HotelBookingSystem.Common;
-using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Domain.Entities;
-using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
 
 namespace Waracle.HotelBookingSystem.Application.CommandHandlers
 {

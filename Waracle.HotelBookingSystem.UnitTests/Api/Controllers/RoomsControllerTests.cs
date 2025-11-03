@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.Results;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using Waracle.HotelBookingSystem.Application.Commands;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
-using Waracle.HotelBookingSystem.Domain.Entities;
 using Waracle.HotelBookingSystem.Web.Api.Controllers;
-using Waracle.HotelBookingSystem.Web.Api.Models;
-using Waracle.HotelBookingSystem.Web.Api.Validators;
 
 namespace Waracle.HotelBookingSystem.UnitTests.Api.Controllers
 {
@@ -48,7 +37,11 @@ namespace Waracle.HotelBookingSystem.UnitTests.Api.Controllers
             var checkOut = DateTime.Now.AddDays(2);
             var occupants = 2;
             var rooms = new List<RoomDto> { new RoomDto { RoomId = 1 } };
-            _mediatorMock.Setup(m => m.Send(It.Is<GetAvailableRoomsQuery>(q => q.CheckInDate == checkIn && q.CheckOutDate == checkOut && q.NumberOfGuests == occupants), default))
+            _mediatorMock.Setup(m =>
+                    m.Send(
+                        It.Is<GetAvailableRoomsQuery>(q =>
+                            q.CheckInDate == checkIn && q.CheckOutDate == checkOut && q.NumberOfGuests == occupants),
+                        default))
                 .ReturnsAsync(rooms);
 
             // Act

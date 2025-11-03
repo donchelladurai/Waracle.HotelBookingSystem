@@ -1,16 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
-using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
-using Waracle.HotelBookingSystem.Domain.Entities;
 
 namespace Waracle.HotelBookingSystem.Application.QueryHandlers
 {

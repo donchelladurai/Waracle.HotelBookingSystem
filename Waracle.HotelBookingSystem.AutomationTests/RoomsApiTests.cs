@@ -1,11 +1,4 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Waracle.HotelBookingSystem.AutomationTests.Helpers;
-using Waracle.HotelBookingSystem.Common.Dtos;
+﻿using Waracle.HotelBookingSystem.Common.Dtos;
 
 namespace Waracle.HotelBookingSystem.AutomationTests
 {

@@ -1,10 +1,5 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.CommandHandlers;
 using Waracle.HotelBookingSystem.Application.Commands;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
@@ -27,7 +22,8 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
             _mockBookingsRepository = new Mock<IBookingsRepository>();
             _mockRoomsRepository = new Mock<IRoomsRepository>();
             _mockLogger = new Mock<ILogger<ClearAllTransactionalDataCommandHandler>>();
-            _systemUnderTest = new ClearAllTransactionalDataCommandHandler(_mockHotelsRepository.Object, _mockBookingsRepository.Object, _mockRoomsRepository.Object, _mockLogger.Object);
+            _systemUnderTest = new ClearAllTransactionalDataCommandHandler(_mockHotelsRepository.Object,
+                _mockBookingsRepository.Object, _mockRoomsRepository.Object, _mockLogger.Object);
         }
 
         [Test]
@@ -49,17 +45,22 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
             var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, cts.Token), Throws.TypeOf<OperationCanceledException>());
+            Assert.That(async () => await _systemUnderTest.Handle(command, cts.Token),
+                Throws.TypeOf<OperationCanceledException>());
         }
 
         [Test]
         public void Handle_ThrowsException_WhenRepositoryThrows()
         {
             var command = new ClearAllTransactionalDataCommand();
-            _mockBookingsRepository.Setup(r => r.RemoveAllAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("Test error"));
+            _mockBookingsRepository.Setup(r => r.RemoveAllAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Test error"));
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None), Throws.Exception.With.Message.EqualTo("Test error"));
-            _mockLogger.Verify(l => l.Log(LogLevel.Error, It.IsAny<EventId>(), It.Is<It.IsAnyType>((v, t) => true), It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
+            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None),
+                Throws.Exception.With.Message.EqualTo("Test error"));
+            _mockLogger.Verify(
+                l => l.Log(LogLevel.Error, It.IsAny<EventId>(), It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.AtLeastOnce);
         }
     }
 }

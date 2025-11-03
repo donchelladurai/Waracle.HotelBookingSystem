@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Waracle.HotelBookingSystem.Application.QueryHandlers;
 using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;

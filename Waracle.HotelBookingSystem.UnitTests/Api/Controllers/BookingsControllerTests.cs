@@ -2,11 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Commands;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common;
@@ -105,7 +100,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Api.Controllers
             // Arrange
             var reference = "REF123";
             var booking = new BookingDto { BookingReference = reference };
-            _mediatorMock.Setup(m => m.Send(It.Is<GetBookingByReferenceQuery>(q => q.BookingReference == reference), default))
+            _mediatorMock.Setup(m =>
+                    m.Send(It.Is<GetBookingByReferenceQuery>(q => q.BookingReference == reference), default))
                 .ReturnsAsync(booking);
 
             // Act

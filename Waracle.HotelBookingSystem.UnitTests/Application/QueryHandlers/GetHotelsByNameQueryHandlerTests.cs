@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Application.QueryHandlers;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
@@ -44,7 +39,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenLoggerIsNull()
         {
-            Assert.That(() => new GetHotelsByNameQueryHandler(_hotelsRepositoryMock.Object, null), Throws.ArgumentNullException);
+            Assert.That(() => new GetHotelsByNameQueryHandler(_hotelsRepositoryMock.Object, null),
+                Throws.ArgumentNullException);
         }
 
         [Test]
@@ -63,7 +59,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
                 new Hotel { Id = 1, Name = "Hotel1" }
             };
 
-            _hotelsRepositoryMock.Setup(r => r.GetByNameAsync("Hotel1", It.IsAny<CancellationToken>())).ReturnsAsync(hotels);
+            _hotelsRepositoryMock.Setup(r => r.GetByNameAsync("Hotel1", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(hotels);
 
             var result = await _systemUnderTest.Handle(request, CancellationToken.None);
 
@@ -78,7 +75,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         {
             var request = new GetHotelsByNameQuery("Hotel1");
 
-            _hotelsRepositoryMock.Setup(r => r.GetByNameAsync("Hotel1", It.IsAny<CancellationToken>())).ReturnsAsync(new List<Hotel>());
+            _hotelsRepositoryMock.Setup(r => r.GetByNameAsync("Hotel1", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Hotel>());
 
             var result = await _systemUnderTest.Handle(request, CancellationToken.None);
 
@@ -94,7 +92,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
             var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            Assert.That(async () => await _systemUnderTest.Handle(request, cts.Token), Throws.TypeOf<OperationCanceledException>());
+            Assert.That(async () => await _systemUnderTest.Handle(request, cts.Token),
+                Throws.TypeOf<OperationCanceledException>());
         }
 
         [Test]
@@ -102,7 +101,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         {
             var request = new GetHotelsByNameQuery("Hotel1");
 
-            _hotelsRepositoryMock.Setup(r => r.GetByNameAsync("Hotel1", It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("Test exception"));
+            _hotelsRepositoryMock.Setup(r => r.GetByNameAsync("Hotel1", It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Test exception"));
 
             Assert.That(async () => await _systemUnderTest.Handle(request, CancellationToken.None), Throws.Exception);
         }

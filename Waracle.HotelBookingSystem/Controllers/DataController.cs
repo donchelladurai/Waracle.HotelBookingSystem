@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Waracle.HotelBookingSystem.Common.Dtos;
 
 namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 {
@@ -38,9 +37,12 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.SeedDataCommand()).ConfigureAwait(false);
+                var result = await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.SeedDataCommand())
+                    .ConfigureAwait(false);
 
-                return result ? Ok("The data seeding was successful") : StatusCode(409, "The data already seems to be seeded");
+                return result
+                    ? Ok("The data seeding was successful")
+                    : StatusCode(409, "The data already seems to be seeded");
             }
             catch (OperationCanceledException)
             {
@@ -80,7 +82,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.ClearAllTransactionalDataCommand()).ConfigureAwait(false);
+                await _mediator
+                    .Send(new Waracle.HotelBookingSystem.Application.Commands.ClearAllTransactionalDataCommand())
+                    .ConfigureAwait(false);
 
                 return Ok("All transactional data has been cleared successfully");
             }

@@ -27,7 +27,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <param name="checkOutDate">The check out date in ISO format YYYY/MM/DD</param>
         /// <param name="numberOfOccupants">The number of occupants (The largest room accommodates up to 4 people)</param>
         /// <returns>A list of RoomDto objects</returns>
-        [HttpGet()]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

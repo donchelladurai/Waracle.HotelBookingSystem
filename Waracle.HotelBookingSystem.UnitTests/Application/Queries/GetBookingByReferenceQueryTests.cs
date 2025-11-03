@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Waracle.HotelBookingSystem.Application.Queries;
+﻿using Waracle.HotelBookingSystem.Application.Queries;
 
 namespace Waracle.HotelBookingSystem.Application.Tests.Queries
 {

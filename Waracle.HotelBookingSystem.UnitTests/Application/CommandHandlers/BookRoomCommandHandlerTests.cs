@@ -1,15 +1,7 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.CommandHandlers;
 using Waracle.HotelBookingSystem.Application.Commands;
-using Waracle.HotelBookingSystem.Common;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Domain.Entities;
 
@@ -31,7 +23,8 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
             _mockRoomsRepository = new Mock<IRoomsRepository>();
             _mockHotelsRepository = new Mock<IHotelsRepository>();
             _mockLogger = new Mock<ILogger<BookRoomCommandHandler>>();
-            _systemUnderTest = new BookRoomCommandHandler(_mockBookingsRepository.Object, _mockRoomsRepository.Object, _mockHotelsRepository.Object, _mockLogger.Object);
+            _systemUnderTest = new BookRoomCommandHandler(_mockBookingsRepository.Object, _mockRoomsRepository.Object,
+                _mockHotelsRepository.Object, _mockLogger.Object);
         }
 
         [TearDown]
@@ -43,31 +36,40 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenBookingsRepositoryIsNull()
         {
-            Assert.That(() => new BookRoomCommandHandler(null, _mockRoomsRepository.Object, _mockHotelsRepository.Object, _mockLogger.Object), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(
+                () => new BookRoomCommandHandler(null, _mockRoomsRepository.Object, _mockHotelsRepository.Object,
+                    _mockLogger.Object), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenRoomsRepositoryIsNull()
         {
-            Assert.That(() => new BookRoomCommandHandler(_mockBookingsRepository.Object, null, _mockHotelsRepository.Object, _mockLogger.Object), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(
+                () => new BookRoomCommandHandler(_mockBookingsRepository.Object, null, _mockHotelsRepository.Object,
+                    _mockLogger.Object), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenHotelsRepositoryIsNull()
         {
-            Assert.That(() => new BookRoomCommandHandler(_mockBookingsRepository.Object, _mockRoomsRepository.Object, null, _mockLogger.Object), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(
+                () => new BookRoomCommandHandler(_mockBookingsRepository.Object, _mockRoomsRepository.Object, null,
+                    _mockLogger.Object), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenLoggerIsNull()
         {
-            Assert.That(() => new BookRoomCommandHandler(_mockBookingsRepository.Object, _mockRoomsRepository.Object, _mockHotelsRepository.Object, null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(
+                () => new BookRoomCommandHandler(_mockBookingsRepository.Object, _mockRoomsRepository.Object,
+                    _mockHotelsRepository.Object, null), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
         public async Task Handle_ThrowsArgumentNullException_WhenCommandIsNull()
         {
-            Assert.That(async () => await _systemUnderTest.Handle(null, CancellationToken.None), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(async () => await _systemUnderTest.Handle(null, CancellationToken.None),
+                Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
@@ -75,7 +77,8 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
         {
             var command = new BookRoomCommand(1, 1, DateTime.Now, DateTime.Now.AddDays(1), 0);
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None),
+                Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -83,16 +86,19 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
         {
             var command = new BookRoomCommand(1, 1, DateTime.Now, DateTime.Now, 1);
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None), Throws.TypeOf<ArgumentException>());
+            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None),
+                Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
         public async Task Handle_ThrowsArgumentException_WhenHotelDoesNotExist()
         {
             var command = new BookRoomCommand(1, 1, DateTime.Now, DateTime.Now.AddDays(1), 1);
-            _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync((Hotel)null);
+            _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Hotel)null);
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None), Throws.TypeOf<ArgumentException>().With.Message.Contains("HotelId"));
+            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None),
+                Throws.TypeOf<ArgumentException>().With.Message.Contains("HotelId"));
         }
 
         [Test]
@@ -102,7 +108,8 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
             var hotel = new Hotel { Id = 1, Rooms = new List<Room> { new Room { Id = 1 } } };
             _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(hotel);
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None), Throws.TypeOf<ArgumentException>().With.Message.Contains("RoomId"));
+            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None),
+                Throws.TypeOf<ArgumentException>().With.Message.Contains("RoomId"));
         }
 
         [Test]
@@ -111,19 +118,24 @@ namespace Waracle.HotelBookingSystem.Application.Tests.CommandHandlers
             var command = new BookRoomCommand(1, 1, DateTime.Now, DateTime.Now.AddDays(1), 1);
             var cts = new CancellationTokenSource();
             cts.Cancel();
-            _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(new Hotel { Rooms = new List<Room> { new Room { Id = 1 } } });
+            _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Hotel { Rooms = new List<Room> { new Room { Id = 1 } } });
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, cts.Token), Throws.TypeOf<OperationCanceledException>());
+            Assert.That(async () => await _systemUnderTest.Handle(command, cts.Token),
+                Throws.TypeOf<OperationCanceledException>());
         }
 
         [Test]
         public void Handle_ThrowsException_WhenRepositoryThrows()
         {
             var command = new BookRoomCommand(1, 1, DateTime.Now, DateTime.Now.AddDays(1), 1);
-            _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(new Hotel { Rooms = new List<Room> { new Room { Id = 1 } } });
-            _mockRoomsRepository.Setup(r => r.GetByHotelIdAsync(1, It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("Test error"));
+            _mockHotelsRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Hotel { Rooms = new List<Room> { new Room { Id = 1 } } });
+            _mockRoomsRepository.Setup(r => r.GetByHotelIdAsync(1, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Test error"));
 
-            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None), Throws.Exception.With.Message.EqualTo("Test error"));
+            Assert.That(async () => await _systemUnderTest.Handle(command, CancellationToken.None),
+                Throws.Exception.With.Message.EqualTo("Test error"));
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Waracle.HotelBookingSystem.Web.Api.Models;
+﻿using Waracle.HotelBookingSystem.Web.Api.Models;
 using Waracle.HotelBookingSystem.Web.Api.Validators;
 
 namespace Waracle.HotelBookingSystem.UnitTests.Api.Validators
@@ -54,7 +49,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Api.Validators
 
             // Assert
             Assert.That(result.IsValid, Is.False);
-            Assert.That(result.Errors[0].ErrorMessage, Is.EqualTo("Check-in date and check-out date cannot be the same."));
+            Assert.That(result.Errors[0].ErrorMessage,
+                Is.EqualTo("Check-in date and check-out date cannot be the same."));
         }
 
         [Test]
@@ -73,7 +69,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Api.Validators
 
             // Assert
             Assert.That(result.IsValid, Is.False);
-            Assert.That(result.Errors[0].ErrorMessage, Is.EqualTo("Check-in date must be earlier than check-out date."));
+            Assert.That(result.Errors[0].ErrorMessage,
+                Is.EqualTo("Check-in date must be earlier than check-out date."));
         }
 
         [Test]

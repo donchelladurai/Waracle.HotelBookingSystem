@@ -1,13 +1,4 @@
-﻿using NUnit.Framework;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Waracle.HotelBookingSystem.Application;
-using Waracle.HotelBookingSystem.AutomationTests.Helpers;
-using Waracle.HotelBookingSystem.Common.Dtos;
+﻿using Waracle.HotelBookingSystem.Common.Dtos;
 using Waracle.HotelBookingSystem.Web.Api.Models;
 
 namespace Waracle.HotelBookingSystem.AutomationTests
@@ -35,7 +26,9 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             var booking = GetSampleBooking().Result;
 
             // Act
-            var response = await RestHttpClient.ExecuteGetAsync<BookingDto>($"/api/bookings/reference?bookingReference={booking.BookingReference}");
+            var response =
+                await RestHttpClient.ExecuteGetAsync<BookingDto>(
+                    $"/api/bookings/reference?bookingReference={booking.BookingReference}");
 
             // Assert
             Assert.That((int)response.StatusCode == 200);
@@ -76,7 +69,8 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             var response = await RestHttpClient.ExecutePostAsync<string>("/api/bookings", model);
 
             // Assert
-            Assert.That((int)response.StatusCode == 409, $"The selected room is not available for {booking.NumberOfGuests} occupants between {booking.CheckInDate} and {booking.CheckOutDate}");
+            Assert.That((int)response.StatusCode == 409,
+                $"The selected room is not available for {booking.NumberOfGuests} occupants between {booking.CheckInDate} and {booking.CheckOutDate}");
         }
 
         [Test]

@@ -2,11 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Common.Dtos;
 using Waracle.HotelBookingSystem.Web.Api.Controllers;
@@ -90,7 +85,7 @@ namespace Waracle.HotelBookingSystem.UnitTests.Api.Controllers
 
             // Act
             var result = await _systemUnderTest.GetByNameAsync(name, default);
-            
+
             var os = result as ObjectResult;
 
             // Assert

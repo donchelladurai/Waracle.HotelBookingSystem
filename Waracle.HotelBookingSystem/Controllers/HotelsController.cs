@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Waracle.HotelBookingSystem.Application.Queries;
-using Waracle.HotelBookingSystem.Common.Dtos;
-using Waracle.HotelBookingSystem.Domain.Entities;
 
 namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 {
@@ -14,8 +12,8 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<HotelsController> _logger;
 
-        public HotelsController(IMediator mediator, ILogger<HotelsController> logger) 
-        { 
+        public HotelsController(IMediator mediator, ILogger<HotelsController> logger)
+        {
             _mediator = mediator;
             _logger = logger;
         }

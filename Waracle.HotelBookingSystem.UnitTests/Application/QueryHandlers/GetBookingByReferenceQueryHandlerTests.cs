@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Waracle.HotelBookingSystem.Application.Queries;
 using Waracle.HotelBookingSystem.Application.QueryHandlers;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
@@ -24,7 +19,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         {
             _bookingsRepositoryMock = new Mock<IBookingsRepository>();
             _loggerMock = new Mock<ILogger<GetBookingByReferenceQueryHandler>>();
-            _systemUnderTest = new GetBookingByReferenceQueryHandler(_bookingsRepositoryMock.Object, _loggerMock.Object);
+            _systemUnderTest =
+                new GetBookingByReferenceQueryHandler(_bookingsRepositoryMock.Object, _loggerMock.Object);
         }
 
         [TearDown]
@@ -38,13 +34,15 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenBookingsRepositoryIsNull()
         {
-            Assert.That(() => new GetBookingByReferenceQueryHandler(null, _loggerMock.Object), Throws.ArgumentNullException);
+            Assert.That(() => new GetBookingByReferenceQueryHandler(null, _loggerMock.Object),
+                Throws.ArgumentNullException);
         }
 
         [Test]
         public void Constructor_ThrowsArgumentNullException_WhenLoggerIsNull()
         {
-            Assert.That(() => new GetBookingByReferenceQueryHandler(_bookingsRepositoryMock.Object, null), Throws.ArgumentNullException);
+            Assert.That(() => new GetBookingByReferenceQueryHandler(_bookingsRepositoryMock.Object, null),
+                Throws.ArgumentNullException);
         }
 
         [Test]
@@ -57,7 +55,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         public void Handle_ThrowsArgumentNullException_WhenBookingReferenceIsNull()
         {
             var request = new GetBookingByReferenceQuery(null);
-            Assert.That(async () => await _systemUnderTest.Handle(request, CancellationToken.None), Throws.ArgumentNullException);
+            Assert.That(async () => await _systemUnderTest.Handle(request, CancellationToken.None),
+                Throws.ArgumentNullException);
         }
 
         [Test]
@@ -80,7 +79,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
                 NumberOfGuests = 2
             };
 
-            _bookingsRepositoryMock.Setup(r => r.FindByReferenceAsync("REF123", It.IsAny<CancellationToken>())).ReturnsAsync(booking);
+            _bookingsRepositoryMock.Setup(r => r.FindByReferenceAsync("REF123", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(booking);
 
             var result = await _systemUnderTest.Handle(request, CancellationToken.None);
 
@@ -96,7 +96,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         {
             var request = new GetBookingByReferenceQuery("REF123");
 
-            _bookingsRepositoryMock.Setup(r => r.FindByReferenceAsync("REF123", It.IsAny<CancellationToken>())).ReturnsAsync((Booking)null);
+            _bookingsRepositoryMock.Setup(r => r.FindByReferenceAsync("REF123", It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Booking)null);
 
             var result = await _systemUnderTest.Handle(request, CancellationToken.None);
 
@@ -111,7 +112,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
             var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            Assert.That(async () => await _systemUnderTest.Handle(request, cts.Token), Throws.TypeOf<OperationCanceledException>());
+            Assert.That(async () => await _systemUnderTest.Handle(request, cts.Token),
+                Throws.TypeOf<OperationCanceledException>());
         }
 
         [Test]
@@ -119,7 +121,8 @@ namespace Waracle.HotelBookingSystem.UnitTests.Application.QueryHandlers
         {
             var request = new GetBookingByReferenceQuery("REF123");
 
-            _bookingsRepositoryMock.Setup(r => r.FindByReferenceAsync("REF123", It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("Test exception"));
+            _bookingsRepositoryMock.Setup(r => r.FindByReferenceAsync("REF123", It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Test exception"));
 
             Assert.That(async () => await _systemUnderTest.Handle(request, CancellationToken.None), Throws.Exception);
         }
