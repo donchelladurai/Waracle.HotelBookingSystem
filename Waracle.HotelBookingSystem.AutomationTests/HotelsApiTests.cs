@@ -19,8 +19,8 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             string inn = "inn";
 
             // Act
-            var travelodgeResponse = await HttpClient.ExecuteGetAsync<List<HotelDto>>($"/api/hotels/{travelodge}");
-            var innResponse = await HttpClient.ExecuteGetAsync<List<HotelDto>>($"/api/hotels/{inn}");
+            var travelodgeResponse = await RestHttpClient.ExecuteGetAsync<List<HotelDto>>($"/api/hotels/{travelodge}");
+            var innResponse = await RestHttpClient.ExecuteGetAsync<List<HotelDto>>($"/api/hotels/{inn}");
 
             // Assert
             Assert.That((int)travelodgeResponse.StatusCode == 200);
@@ -43,7 +43,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             var invalidHotelName = "NonExistentHotel";
 
             // Act
-            var response = await HttpClient.ExecuteGetAsync<string>($"/api/hotels/{invalidHotelName}");
+            var response = await RestHttpClient.ExecuteGetAsync<string>($"/api/hotels/{invalidHotelName}");
 
             // Assert
             Assert.That((int)response.StatusCode == 404);

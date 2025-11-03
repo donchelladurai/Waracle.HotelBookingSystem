@@ -1,11 +1,12 @@
 ﻿using NUnit.Framework;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Waracle.HotelBookingSystem.AutomationTests.Helpers;
 using Waracle.HotelBookingSystem.Application;
+using Waracle.HotelBookingSystem.AutomationTests.Helpers;
 using Waracle.HotelBookingSystem.Common.Dtos;
 using Waracle.HotelBookingSystem.Web.Api.Models;
 
@@ -18,7 +19,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
         public async Task GetAllBookings_ShouldReturnBookings_WhenExists()
         {
             // Act
-            var response = await HttpClient.ExecuteGetAsync<List<BookingDto>>("/api/bookings");
+            var response = await RestHttpClient.ExecuteGetAsync<List<BookingDto>>("/api/bookings");
 
             // Assert
             Assert.That((int)response.StatusCode == 200);
@@ -34,7 +35,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             var booking = GetSampleBooking().Result;
 
             // Act
-            var response = await HttpClient.ExecuteGetAsync<BookingDto>($"/api/bookings/reference?bookingReference={booking.BookingReference}");
+            var response = await RestHttpClient.ExecuteGetAsync<BookingDto>($"/api/bookings/reference?bookingReference={booking.BookingReference}");
 
             // Assert
             Assert.That((int)response.StatusCode == 200);
@@ -50,7 +51,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             string invalidRef = "InvalidRef123";
 
             //Act
-            var response = await HttpClient.ExecuteGetAsync<string>($"/api/bookings/{invalidRef}");
+            var response = await RestHttpClient.ExecuteGetAsync<string>($"/api/bookings/{invalidRef}");
 
             //Assert
             Assert.That((int)response.StatusCode == 404);
@@ -72,7 +73,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
             };
 
             // Act
-            var response = await HttpClient.ExecutePostAsync<string>("/api/bookings", model);
+            var response = await RestHttpClient.ExecutePostAsync<string>("/api/bookings", model);
 
             // Assert
             Assert.That((int)response.StatusCode == 200, $"The selected room is not available for {booking.NumberOfGuests} occupants between {booking.CheckInDate} and {booking.CheckOutDate}");
@@ -90,7 +91,7 @@ namespace Waracle.HotelBookingSystem.AutomationTests
                 NumberOfGuests = 500
             };
 
-            var response = await HttpClient.ExecutePostAsync<string>("/api/bookings", invalidModel);
+            var response = await RestHttpClient.ExecutePostAsync<string>("/api/bookings", invalidModel);
 
             Assert.That((int)response.StatusCode == 400);
         }
@@ -111,36 +112,10 @@ namespace Waracle.HotelBookingSystem.AutomationTests
                 NumberOfGuests = availableRooms.First().Capacity
             };
 
-            var response = await HttpClient.ExecutePostAsync<string>("/api/bookings", model);
+            var response = await RestHttpClient.ExecutePostAsync<string>("/api/bookings", model);
 
             // Assert
             Assert.That((int)response.StatusCode == 200);
-        }
-
-        private async Task<BookingDto> GetSampleBooking()
-        {
-            var response = await HttpClient.ExecuteGetAsync<string>("/api/bookings");
-            if (response.StatusCode == System.Net.HttpStatusCode.OK && response.Content != null && response.Content.Count() > 0)
-            {
-                var bookings = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BookingDto>>(response.Content);
-
-                return bookings.FirstOrDefault();
-            }
-
-            return null;
-        }
-
-        private async Task<IEnumerable<RoomDto>> GetAvailableRooms(DateTime checkIn, DateTime checkOut)
-        {
-            var response = await HttpClient.ExecuteGetAsync<string>($"/api/rooms?checkInDate={checkIn.ToShortDateString()}&checkOutDate={checkOut.ToShortDateString()}&numberOfOccupants=1");
-            if (response.StatusCode == System.Net.HttpStatusCode.OK && response.Content != null && response.Content.Count() > 0)
-            {
-                var rooms = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomDto>>(response.Content);
-
-                return rooms;
-            }
-
-            return null;
         }
     }
 }
