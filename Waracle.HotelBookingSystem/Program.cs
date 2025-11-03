@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Waracle.HotelBookingSystem.Application.QueryHandlers;
 using Waracle.HotelBookingSystem.Data.Repositories;
 using Waracle.HotelBookingSystem.Data.Repositories.Interfaces;
 using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
+using Waracle.HotelBookingSystem.Web.Api.Middleware;
 
 namespace Waracle.HotelBookingSystem
 {
@@ -77,8 +78,10 @@ namespace Waracle.HotelBookingSystem
 
             var app = builder.Build();
 
+            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
             // Configure the HTTP request pipeline.
-            
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
