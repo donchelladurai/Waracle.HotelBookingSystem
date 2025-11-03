@@ -31,8 +31,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAvailableRoomsAsync(DateTime checkInDate, DateTime checkOutDate, int numberOfOccupants)
+        public async Task<IActionResult> GetAvailableRoomsAsync(DateTime checkInDate, DateTime checkOutDate, int numberOfOccupants, CancellationToken cancellationToken)
         {
             var model = new GetAvailableRoomsModel
             {
@@ -51,9 +52,17 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var rooms = await _mediator.Send(new GetAvailableRoomsQuery(model.CheckInDate, model.CheckOutDate, model.NumberOfOccupants)).ConfigureAwait(false);
 
                 return rooms.Any() ? Ok(rooms) : NotFound($"No rooms were found between the dates {model.CheckInDate.ToShortDateString()} and {model.CheckOutDate.ToShortDateString()} for {numberOfOccupants} occupants");
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("GetByNameAsync operation was cancelled.");
+
+                return StatusCode(499, "Operation cancelled.");
             }
             catch (Exception ex)
             {

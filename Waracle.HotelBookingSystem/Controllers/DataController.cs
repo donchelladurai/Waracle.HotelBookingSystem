@@ -29,14 +29,24 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [Route("seed")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<bool>> SeedDataAsync()
+        public async Task<ActionResult<bool>> SeedDataAsync(CancellationToken cancellationToken)
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var result = await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.SeedDataCommand()).ConfigureAwait(false);
 
-                return Ok(result ? "The data seeding was successful" : "The data already seems to be seeded");
+                return result ? Ok("The data seeding was successful") : StatusCode(409, "The data already seems to be seeded");
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("SeedDataAsync operation was cancelled.");
+
+                return StatusCode(499, "Operation cancelled.");
             }
             catch (Exception e)
             {
@@ -62,14 +72,23 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [Route("clear")]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<bool>> ClearAllTransactionalDataAsync()
+        public async Task<ActionResult<bool>> ClearAllTransactionalDataAsync(CancellationToken cancellationToken)
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 await _mediator.Send(new Waracle.HotelBookingSystem.Application.Commands.ClearAllTransactionalDataCommand()).ConfigureAwait(false);
 
                 return Ok("All transactional data has been cleared successfully");
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("ClearAllTransactionalDataAsync operation was cancelled.");
+
+                return StatusCode(499, "Operation cancelled.");
             }
             catch (Exception e)
             {

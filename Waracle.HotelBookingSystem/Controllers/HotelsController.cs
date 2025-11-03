@@ -35,8 +35,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<HotelDto>> GetByNameAsync(string name)
+        public async Task<ActionResult<HotelDto>> GetByNameAsync(string name, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -45,6 +46,8 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var hotels = await _mediator.Send(new GetHotelsByNameQuery(name));
 
                 if (hotels == null || !hotels.Any())
@@ -53,6 +56,12 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                 }
 
                 return Ok(hotels);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("GetByNameAsync operation was cancelled.");
+
+                return StatusCode(499, "Operation cancelled.");
             }
             catch (Exception ex)
             {
