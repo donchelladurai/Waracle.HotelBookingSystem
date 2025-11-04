@@ -1,7 +1,7 @@
 # Hotel Booking API - By Don Chelladurai
   Don Chelladurai's solution for the "Backend Developer Challenge"
 
-## Build with
+## Built with
 - Visual Studio 2022
 - .NET 8.0
 - ASP.NET Core 5.0
