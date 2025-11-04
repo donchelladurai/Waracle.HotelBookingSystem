@@ -13,6 +13,9 @@
 ## Hosted On
 https://waracle-hotelbookingsystem-webapi-fjgpd5d5hwdrbxbt.canadacentral-01.azurewebsites.net/swagger
 
+### Please note: 
+Azure seems to be throttling connections to the free version of Azure SQL that I've used, likely because it is hosting in a shared resource. If an HTTP Request times out in the testable link and returns an HTTP 500, please try again 2 or 3 times. I've set the connection time out to 300 seconds and retries to 10 in the connection string that is published. 
+
 ## Endpoints
 
 ### Data (Used for seeding and resetting data)
