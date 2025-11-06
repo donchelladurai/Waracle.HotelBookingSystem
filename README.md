@@ -4,11 +4,12 @@
 ## Built with
 - Visual Studio 2022
 - .NET 8.0
-- ASP.NET Core 5.0
 - EF Core 9.0
 - Azure SQL DB
 - Azure Application Insights
 - Hosted as an Azure APP Service
+
+The design uses an onion architecture with the repository layer separated from Infrastructure, to allow for multiple data sources. I assumed a hotel booking system would refer to multiple third party data sources or vendors to fetch information, besides its own data database or databases. I wanted the infrastructure layer to be able to handle these using separate projects which can be developed and scaled independently.
 
 ## Hosted On
 https://waracle-hotelbookingsystem-webapi-fjgpd5d5hwdrbxbt.canadacentral-01.azurewebsites.net/swagger
