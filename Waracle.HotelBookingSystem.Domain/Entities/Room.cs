@@ -1,6 +1,6 @@
 ﻿namespace Waracle.HotelBookingSystem.Domain.Entities
 {
-    public class Room
+    public class Room : SqlEntity
     {
         public int Id { get; set; }
         public int HotelId { get; set; }

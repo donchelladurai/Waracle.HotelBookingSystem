@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Waracle.HotelBookingSystem.Domain.Entities
 {
-    public class Booking
+    public class Booking : SqlEntity
     {
         public int Id { get; set; }
         public int RoomId { get; set; }

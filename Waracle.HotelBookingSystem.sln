@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.UnitTests", "Waracle.HotelBookingSystem.UnitTests\Waracle.HotelBookingSystem.UnitTests.csproj", "{51E68F3B-BABB-4873-A99E-07F51ED7BD13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waracle.HotelBookingSystem.Infrastructure.AvisCarHire", "Waracle.HotelBookingSystem.Infrastructure.AvisCarHire\Waracle.HotelBookingSystem.Infrastructure.AvisCarHire.csproj", "{A6022A26-32DC-4142-ADD6-F2D047A3606D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{51E68F3B-BABB-4873-A99E-07F51ED7BD13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51E68F3B-BABB-4873-A99E-07F51ED7BD13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51E68F3B-BABB-4873-A99E-07F51ED7BD13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6022A26-32DC-4142-ADD6-F2D047A3606D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6022A26-32DC-4142-ADD6-F2D047A3606D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6022A26-32DC-4142-ADD6-F2D047A3606D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6022A26-32DC-4142-ADD6-F2D047A3606D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
