@@ -151,9 +151,9 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                     model.CheckInDate, model.CheckOutDate, model.NumberOfGuests)).ConfigureAwait(false);
 
                 //The selected room is not available for the specified dates.
-                if (commandResult.IsSuccessful is false)
+                if (commandResult.IsFailure)
                 {
-                    if (commandResult.IsRoomUnavailable)
+                    if (commandResult.Error.Code.Equals("Room not available to book"))
                     {
                         return StatusCode(409,
                             $"The selected room is not available for {model.NumberOfGuests} occupants between {model.CheckInDate.ToFormattedDateString()} and {model.CheckOutDate.ToFormattedDateString()}");
@@ -167,7 +167,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                         });
                 }
 
-                return Ok($"The booking was created with Booking Reference {commandResult.BookingReference}");
+                return Ok($"The booking was created with Booking Reference {commandResult.Value}");
             }
             catch (OperationCanceledException)
             {

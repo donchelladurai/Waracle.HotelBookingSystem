@@ -4,10 +4,10 @@
     {
         public HireCar(string hireCompany, string make, string model, int seats)
         {
-            this.HireCompany = hireCompany;
-            this.Make = make;
-            this.Model = model;
-            this.Seats = seats;
+            HireCompany = hireCompany;
+            Make = make;
+            Model = model;
+            Seats = seats;
         }
 
         public string HireCompany { get; set; }

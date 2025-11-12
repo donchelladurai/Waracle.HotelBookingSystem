@@ -28,25 +28,26 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var booking = await _bookingsRepository.FindByReferenceAsync(request.BookingReference, cancellationToken).ConfigureAwait(false);
-                if (booking == null)
-                {
-                    _logger.LogInformation($"No booking found for reference {request.BookingReference}");
+                //var booking = await _bookingsRepository.FindByReferenceAsync(request.BookingReference, cancellationToken).ConfigureAwait(false);
+                //if (booking == null)
+                //{
+                //    _logger.LogInformation($"No booking found for reference {request.BookingReference}");
 
-                    return null;
-                }
+                //    return null;
+                //}
 
-                return new BookingDto
-                {
-                    HotelId = booking.Room.HotelId,
-                    RoomId = booking.RoomId,
-                    HotelName = booking.Room.Hotel.Name,
-                    RoomType = booking.Room.RoomType.Name,
-                    BookingReference = booking.Reference,
-                    CheckInDate = booking.CheckInDate.ToFormattedDateString(),
-                    CheckOutDate = booking.CheckOutDate.ToFormattedDateString(),
-                    NumberOfGuests = booking.NumberOfGuests.GetValueOrDefault()
-                };
+                //return new BookingDto
+                //{
+                //    HotelId = booking.Room.HotelId,
+                //    RoomId = booking.RoomId,
+                //    HotelName = booking.Room.Hotel.Name,
+                //    RoomType = booking.Room.RoomType.Name,
+                //    BookingReference = booking.Reference,
+                //    CheckInDate = booking.CheckInDate.ToFormattedDateString(),
+                //    CheckOutDate = booking.CheckOutDate.ToFormattedDateString(),
+                //    NumberOfGuests = booking.NumberOfGuests.GetValueOrDefault()
+                //};
+                return null;
             }
             catch (OperationCanceledException)
             {

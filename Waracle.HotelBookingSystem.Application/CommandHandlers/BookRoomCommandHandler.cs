@@ -11,11 +11,9 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
     /// <summary>
     /// The command handler responsible for processing room booking requests.
     /// </summary>
-    public class BookRoomCommandHandler : IRequestHandler<BookRoomCommand, BookRoomCommandResult>
+    public class BookRoomCommandHandler : IRequestHandler<BookRoomCommand, Result<string>>
     {
-        private readonly IBookingsRepository _bookingsRepository;
-        private readonly IRoomsRepository _roomsRepository;
-        private readonly IHotelsRepository _hotelsRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<BookRoomCommandHandler> _logger;
 
         private readonly Random _random = new();
@@ -24,19 +22,14 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="BookRoomCommandHandler"/> class.
         /// </summary>
-        /// <param name="hotelsRepository">The repository used to access bookings data and perform booking operations.</param>
-        /// /// <param name="hotelsRepository">The repository used to access rooms data and perform booking operations.</param>
+        /// <param name="unitOfWork">The unit of work object</param>
         /// <param name="logger">The logger used to log information and errors related to the booking process.</param>
         public BookRoomCommandHandler(
-            IBookingsRepository bookingsRepository,
-            IRoomsRepository roomsRepository,
-            IHotelsRepository hotelsRepository,
+            IUnitOfWork unitOfWork,
             ILogger<BookRoomCommandHandler> logger)
         {
-            _bookingsRepository = bookingsRepository ?? throw new ArgumentNullException(nameof(bookingsRepository));
-            _roomsRepository = roomsRepository ?? throw new ArgumentNullException(nameof(roomsRepository));
-            _hotelsRepository = hotelsRepository ?? throw new ArgumentNullException(nameof(hotelsRepository));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this._unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         /// <summary>
@@ -45,17 +38,26 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         /// <param name="command">The command request containing details of the room booking.</param>
         /// <param name="cancellationToken">A cancellation token that can be used to cancel the booking operation.</param>
         /// <returns>A <see cref="BookRoomCommandResult"/> object representing the changed state.</returns>
-        public async Task<BookRoomCommandResult> Handle(BookRoomCommand command, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(BookRoomCommand command, CancellationToken cancellationToken)
         {
-            await CheckForArgumentExceptions(command, cancellationToken).ConfigureAwait(false);
+            if (command == null)
+                return Result<string>.Failure(new Error("Command is null", $"The command inside {typeof(BookRoomCommandHandler)} is null"));
 
-            _logger.LogInformation($"Starting booking process for room {command.RoomId} from {command.CheckInDate} to {command.CheckOutDate}.");
+
+            if (cancellationToken == null)
+                return Result<string>.Failure(new Error("CancellationToken is null", $"The CancellationToken inside {typeof(BookRoomCommandHandler)} is null"));
+
+            if (command.NumberOfGuests <= 0)
+                return Result<string>.Failure(new Error("Invalid Number of Guests", $"The value for NumberOfGuests was ${command.NumberOfGuests}"));
+
+            if (command.IsCheckoutDateAfterCheckInDate() == false)
+                return Result<string>.Failure(new Error("Check-Out date is before Check-In date", $"The Check-Out date {command.CheckOutDate.ToShortDateString()} is before the Check-In date {command.CheckInDate}"));
 
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var allRooms = await _roomsRepository.GetByHotelIdAsync(command.HotelId, cancellationToken).ConfigureAwait(false);
+                var allRooms = await _unitOfWork.RoomsRepository.GetByHotelIdAsync(command.HotelId, cancellationToken).ConfigureAwait(false);
 
                 var availableRooms = allRooms.GetAvailableRooms(command.NumberOfGuests, command.CheckInDate, command.CheckOutDate);
 
@@ -63,23 +65,27 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
                 {
                     _logger.LogError($"Room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}.");
 
-                    return new BookRoomCommandResult(false, true, string.Empty);
+                    return Result<string>.Failure(new Error("Room not available to book", $"The room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}"));
                 }
 
-                var booking = new Booking()
+                var room = availableRooms.Single(r => r.Id == command.RoomId);
+
+                var booking = new Booking
                 {
                     Reference = GenerateBookingReference(),
-                    Room = availableRooms.Single(r => r.Id == command.RoomId),
+                    Room = room,
                     CheckInDate = command.CheckInDate.ToUniversalTime(),
                     CheckOutDate = command.CheckOutDate.ToUniversalTime(),
                     NumberOfGuests = command.NumberOfGuests
                 };
 
-                await _bookingsRepository.CreateAsync(booking, cancellationToken).ConfigureAwait(false);
+                await _unitOfWork.BookingsRepository.AddAsync(booking, cancellationToken).ConfigureAwait(false);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation($"Booking created successfully for room {command.RoomId}.");
 
-                return new BookRoomCommandResult(true, false, booking.Reference);
+                return Result<string>.Success(booking.Reference);
             }
             catch (OperationCanceledException)
             {
@@ -92,41 +98,6 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
                 _logger.LogError(ex, "Error occurred while booking room {Room}.", command.RoomId);
 
                 throw;
-            }
-        }
-
-        private async Task CheckForArgumentExceptions(BookRoomCommand command, CancellationToken cancellationToken)
-        {
-            ArgumentNullException.ThrowIfNull(command);
-            ArgumentNullException.ThrowIfNull(cancellationToken);
-
-            if (command.NumberOfGuests <= 0)
-            {
-                _logger.LogError($"Number of guests {command.NumberOfGuests} is not valid.");
-
-                throw new ArgumentOutOfRangeException("Number of guests must be greater than zero.");
-            }
-
-            if (command.IsCheckoutDateAfterCheckInDate() == false)
-            {
-                _logger.LogError($"Check out date {command.CheckOutDate} is not after check in date {command.CheckInDate}.");
-
-                throw new ArgumentException("Check out date must be after check in date.");
-            }
-
-            var hotel = await _hotelsRepository.GetByIdAsync(command.HotelId, cancellationToken).ConfigureAwait(false);
-            if (hotel == null)
-            {
-                _logger.LogError($"Hotel with Id {command.HotelId} does not exist.");
-
-                throw new ArgumentException($"HotelId {command.HotelId} does not exist.");
-            }
-
-            if (hotel.Rooms.All(r => r.Id != command.RoomId))
-            {
-                _logger.LogError($"Room with Id {command.RoomId} does not exist in Hotel with Id {command.HotelId}.");
-
-                throw new ArgumentException($"RoomId {command.RoomId} does not exist in Hotel with Id {command.HotelId}.");
             }
         }
 

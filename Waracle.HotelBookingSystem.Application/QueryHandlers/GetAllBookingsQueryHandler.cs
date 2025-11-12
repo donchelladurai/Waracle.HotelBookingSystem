@@ -22,19 +22,21 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
         {
             try
             {
-                var bookings = await _bookingsRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+                //var bookings = await _bookingsRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
 
-                return bookings.Select(b => new BookingDto
-                {
-                    HotelId = b.Room.HotelId,
-                    RoomId = b.RoomId,
-                    BookingReference = b.Reference,
-                    HotelName = b.Room.Hotel.Name,
-                    RoomType = b.Room.RoomType.Name,
-                    CheckInDate = b.CheckInDate.ToFormattedDateString(),
-                    CheckOutDate = b.CheckOutDate.ToFormattedDateString(),
-                    NumberOfGuests = b.NumberOfGuests.GetValueOrDefault()
-                });
+                //return bookings.Select(b => new BookingDto
+                //{
+                //    HotelId = b.Room.HotelId,
+                //    RoomId = b.RoomId,
+                //    BookingReference = b.Reference,
+                //    HotelName = b.Room.Hotel.Name,
+                //    RoomType = b.Room.RoomType.Name,
+                //    CheckInDate = b.CheckInDate.ToFormattedDateString(),
+                //    CheckOutDate = b.CheckOutDate.ToFormattedDateString(),
+                //    NumberOfGuests = b.NumberOfGuests.GetValueOrDefault()
+                //});
+
+                return null;
             }
             catch (OperationCanceledException)
             {

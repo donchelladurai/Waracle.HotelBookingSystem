@@ -11,7 +11,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
 
         public GenericSqlRepository(AzureSqlHbsDbContext azureSqlDbContext)
         {
-            this._azureSqlDbContext = azureSqlDbContext;
+            _azureSqlDbContext = azureSqlDbContext;
             _dbSet = _azureSqlDbContext.Set<T>();
         }
 
@@ -74,8 +74,8 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                this._dbSet.Attach(entity);
-                this._azureSqlDbContext.Entry(entity).State = EntityState.Modified;
+                _dbSet.Attach(entity);
+                _azureSqlDbContext.Entry(entity).State = EntityState.Modified;
             }
             catch (OperationCanceledException operationCanceledException)
             {

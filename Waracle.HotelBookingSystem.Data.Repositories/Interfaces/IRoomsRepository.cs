@@ -16,16 +16,16 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
         /// <returns>A list of rooms for a specific hotel</returns>
         Task<IEnumerable<Room>> GetByHotelIdAsync(int hotelId, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Get all rooms
-        /// </summary>
-        /// <returns>A list of rooms</returns>
-        Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken);
+        ///// <summary>
+        ///// Get all rooms
+        ///// </summary>
+        ///// <returns>A list of rooms</returns>
+        //Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Removes all rooms
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        Task RemoveAllAsync(CancellationToken cancellationToken);
+        ///// <summary>
+        ///// Removes all rooms
+        ///// </summary>
+        ///// <param name="cancellationToken"></param>
+        //Task RemoveAllAsync(CancellationToken cancellationToken);
     }
 }

@@ -30,8 +30,8 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await _bookingsRepository.RemoveAllAsync(cancellationToken).ConfigureAwait(false);
-                await _roomsRepository.RemoveAllAsync(cancellationToken).ConfigureAwait(false);
+                //await _bookingsRepository.RemoveAllAsync(cancellationToken).ConfigureAwait(false);
+                //await _roomsRepository.RemoveAllAsync(cancellationToken).ConfigureAwait(false);
                 await _hotelsRepository.RemoveAllAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

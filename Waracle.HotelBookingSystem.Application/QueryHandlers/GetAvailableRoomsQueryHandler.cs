@@ -36,19 +36,21 @@ namespace Waracle.HotelBookingSystem.Application.QueryHandlers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var allRooms = await _roomsRepository
-                    .GetAllAsync(cancellationToken).ConfigureAwait(false);
+                //var allRooms = await _roomsRepository
+                //    .GetAllAsync(cancellationToken).ConfigureAwait(false);
 
-                var availableRooms = allRooms.GetAvailableRooms(request.NumberOfGuests, request.CheckInDate, request.CheckOutDate);
+                //var availableRooms = allRooms.GetAvailableRooms(request.NumberOfGuests, request.CheckInDate, request.CheckOutDate);
 
-                return availableRooms.Select(ar => new RoomDto()
-                {
-                    RoomId = ar.Id,
-                    HotelId = ar.HotelId,
-                    HotelName = ar.Hotel.Name,
-                    RoomType = ar.RoomType.Name,
-                    Capacity = ar.RoomType.Capacity
-                });
+                //return availableRooms.Select(ar => new RoomDto()
+                //{
+                //    RoomId = ar.Id,
+                //    HotelId = ar.HotelId,
+                //    HotelName = ar.Hotel.Name,
+                //    RoomType = ar.RoomType.Name,
+                //    Capacity = ar.RoomType.Capacity
+                //});
+
+                return null;
             }
             catch (OperationCanceledException)
             {

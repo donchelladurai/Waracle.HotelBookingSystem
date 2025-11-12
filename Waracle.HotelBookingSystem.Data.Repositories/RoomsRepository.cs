@@ -5,7 +5,7 @@ using Waracle.HotelBookingSystem.Infrastructure.DatabaseContexts;
 
 namespace Waracle.HotelBookingSystem.Data.Repositories
 {
-    public class RoomsRepository : IRoomsRepository
+    public class RoomsRepository : GenericSqlRepository<Room>, IRoomsRepository
     {
         private readonly AzureSqlHbsDbContext _azureSqlHbsDbContext;
 
@@ -13,7 +13,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         /// A repository for CRUD operations related to rooms
         /// </summary>
         /// <param name="azureSqlHbsDbContext">The Azure SQL DB Context</param>
-        public RoomsRepository(AzureSqlHbsDbContext azureSqlHbsDbContext)
+        public RoomsRepository(AzureSqlHbsDbContext azureSqlHbsDbContext) : base(azureSqlHbsDbContext)
         {
             _azureSqlHbsDbContext = azureSqlHbsDbContext;
         }
@@ -48,59 +48,59 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
         }
 
-        /// <summary>
-        /// Get all rooms
-        /// </summary>
-        /// <returns>A list of rooms</returns>
-        public async Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                ArgumentNullException.ThrowIfNull(cancellationToken);
+        ///// <summary>
+        ///// Get all rooms
+        ///// </summary>
+        ///// <returns>A list of rooms</returns>
+        //public async Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken)
+        //{
+        //    try
+        //    {
+        //        ArgumentNullException.ThrowIfNull(cancellationToken);
 
-                cancellationToken.ThrowIfCancellationRequested();
+        //        cancellationToken.ThrowIfCancellationRequested();
 
-                return await _azureSqlHbsDbContext.Rooms
-                            .Include(r => r.Hotel)
-                            .Include(r => r.RoomType)
-                            .Include(r => r.Bookings)
-                                .ToListAsync(cancellationToken)
-                            .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException e)
-            {
-                throw new OperationCanceledException("The operation to get all rooms was cancelled.", e, cancellationToken);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception("An error occurred while retrieving all rooms", exception);
-            }
-        }
+        //        return await _azureSqlHbsDbContext.Rooms
+        //                    .Include(r => r.Hotel)
+        //                    .Include(r => r.RoomType)
+        //                    .Include(r => r.Bookings)
+        //                        .ToListAsync(cancellationToken)
+        //                    .ConfigureAwait(false);
+        //    }
+        //    catch (OperationCanceledException e)
+        //    {
+        //        throw new OperationCanceledException("The operation to get all rooms was cancelled.", e, cancellationToken);
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        throw new Exception("An error occurred while retrieving all rooms", exception);
+        //    }
+        //}
 
-        /// <summary>
-        /// Removes all Rooms
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        public async Task RemoveAllAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                ArgumentNullException.ThrowIfNull(cancellationToken);
+        ///// <summary>
+        ///// Removes all Rooms
+        ///// </summary>
+        ///// <param name="cancellationToken"></param>
+        //public async Task RemoveAllAsync(CancellationToken cancellationToken)
+        //{
+        //    try
+        //    {
+        //        ArgumentNullException.ThrowIfNull(cancellationToken);
 
-                cancellationToken.ThrowIfCancellationRequested();
+        //        cancellationToken.ThrowIfCancellationRequested();
 
-                _azureSqlHbsDbContext.Rooms.RemoveRange(_azureSqlHbsDbContext.Rooms);
+        //        _azureSqlHbsDbContext.Rooms.RemoveRange(_azureSqlHbsDbContext.Rooms);
 
-                await _azureSqlHbsDbContext.SaveChangesAsync();
-            }
-            catch (OperationCanceledException e)
-            {
-                throw new OperationCanceledException("The operation to remove all rooms was cancelled.", e, cancellationToken);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("An error occurred while removing all rooms", e);
-            }
-        }
+        //        await _azureSqlHbsDbContext.SaveChangesAsync();
+        //    }
+        //    catch (OperationCanceledException e)
+        //    {
+        //        throw new OperationCanceledException("The operation to remove all rooms was cancelled.", e, cancellationToken);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception("An error occurred while removing all rooms", e);
+        //    }
+        //}
     }
 }

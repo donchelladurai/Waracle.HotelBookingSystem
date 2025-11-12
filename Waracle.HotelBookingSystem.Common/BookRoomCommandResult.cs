@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Waracle.HotelBookingSystem.Common
+﻿namespace Waracle.HotelBookingSystem.Common
 {
-    public record BookRoomCommandResult
+    public sealed record BookRoomCommandResult
     {
         public BookRoomCommandResult(bool isSuccessful, bool isRoomUnavailable, string bookingReference)
         {
@@ -15,8 +9,8 @@ namespace Waracle.HotelBookingSystem.Common
             IsRoomUnavailable = isRoomUnavailable;
         }
 
-        public bool IsSuccessful { get; protected set; }
-        public bool IsRoomUnavailable { get; protected set; }
-        public string BookingReference { get; protected set; }
+        public bool IsSuccessful { get; }
+        public bool IsRoomUnavailable { get; }
+        public string BookingReference { get; }
     }
 }

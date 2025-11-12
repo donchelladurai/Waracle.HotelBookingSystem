@@ -9,11 +9,11 @@ namespace Waracle.HotelBookingSystem.Data.Repositories.Interfaces
 
         public AvisHireCarRepository(IAvisRentalDataSource avisRentalDataSource)
         {
-            this._avisRentalDataSource = avisRentalDataSource;
+            _avisRentalDataSource = avisRentalDataSource;
         }
         public IEnumerable<HireCar> GetAll()
         {
-            return this._avisRentalDataSource.HireCars.ToList();
+            return _avisRentalDataSource.HireCars.ToList();
         }
     }
 }

@@ -13,43 +13,24 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
         private readonly ILogger<UnitOfWork> _logger;
         private bool _isDisposed = false;
 
-        public IBookingsRepository BookingsRepository
-        {
-            get;
-            set;
-        }
-
-        public IHotelsRepository HotelsRepository
-        {
-            get;
-            set;
-        }
-
-        public IRoomsRepository RoomsRepository
-        {
-            get;
-            set;
-        }
-
-        public IAvisHireCarRepository AvisHireCarRepository
-        {
-            get;
-            set;
-        }
+        public BookingsRepository BookingsRepository { get; }
+        public HotelRepository HotelsRepository { get; }
+        public RoomsRepository RoomsRepository { get; }
+        public IAvisHireCarRepository AvisHireCarRepository { get; }
 
         public UnitOfWork(
             AzureSqlHbsDbContext azureSqlHbsDbContext, 
             IAvisRentalDataSource avisRentalDataSource,
             ILogger<UnitOfWork> logger)
         {
-            this._azureSqlHbsDbContext = azureSqlHbsDbContext;
-            this._avisRentalDataSource = avisRentalDataSource;
-            this._logger = logger;
+            _azureSqlHbsDbContext = azureSqlHbsDbContext;
+            _avisRentalDataSource = avisRentalDataSource;
+            _logger = logger;
 
-            BookingsRepository = new BookingsRepository(this._azureSqlHbsDbContext);
-            RoomsRepository = new RoomsRepository(this._azureSqlHbsDbContext);
-            HotelsRepository = new HotelRepository(this._azureSqlHbsDbContext);
-            AvisHireCarRepository = new AvisHireCarRepository(this._avisRentalDataSource);
+            BookingsRepository = new BookingsRepository(_azureSqlHbsDbContext);
+            RoomsRepository = new RoomsRepository(_azureSqlHbsDbContext);
+            HotelsRepository = new HotelRepository(_azureSqlHbsDbContext);
+            AvisHireCarRepository = new AvisHireCarRepository(_avisRentalDataSource);
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
@@ -62,7 +43,7 @@ namespace Waracle.HotelBookingSystem.Data.Repositories
             }
             catch (OperationCanceledException operationCanceledException)
             {
-                this._logger.LogInformation($"The request was cancelled while saving to the database.");
+                _logger.LogInformation($"The request was cancelled while saving to the database.");
 
                 throw operationCanceledException;
             }

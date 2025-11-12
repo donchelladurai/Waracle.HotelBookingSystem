@@ -2,11 +2,11 @@
 {
     public interface IUnitOfWork : IDisposable
     {
-        IBookingsRepository BookingsRepository { get; }
+        BookingsRepository BookingsRepository { get; }
 
-        IHotelsRepository HotelsRepository { get; }
+        HotelRepository HotelsRepository { get; }
 
-        IRoomsRepository RoomsRepository { get; }
+        RoomsRepository RoomsRepository { get; }
 
         IAvisHireCarRepository AvisHireCarRepository { get; }
 
