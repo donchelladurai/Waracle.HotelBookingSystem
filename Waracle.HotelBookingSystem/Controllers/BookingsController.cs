@@ -8,13 +8,12 @@ using Waracle.HotelBookingSystem.Web.Api.Validators;
 
 namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 {
+    using Waracle.HotelBookingSystem.Common.Enums;
+
     [ApiController]
     [Route("/api/bookings")]
     [ApiVersion("1.0")]
-    /// <summary>
-    /// A controller for managing bookings.
-    /// </summary>
-    public class BookingsController : Controller
+    public class BookingsController : BaseController
     {
         private readonly IMediator _mediator;
         private readonly ILogger<BookingsController> _logger;
@@ -35,30 +34,18 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         public async Task<IActionResult> GetAllBookingsAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            return await HandleActionAsync(
+                       _logger,
+                       async () =>
+                           {
+                               cancellationToken.ThrowIfCancellationRequested();
 
-                var bookings = await _mediator.Send(new GetAllBookingsQuery()).ConfigureAwait(false);
-                return bookings.Any() ? Ok(bookings) : NotFound("No bookings were found");
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning("GetAllBookingsAsync operation was cancelled.");
+                               var bookings = await _mediator.Send(new GetAllBookingsQuery()).ConfigureAwait(false);
 
-                return StatusCode(499, "Operation cancelled.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting all bookings");
-                return StatusCode(
-                    500,
-                    new
-                    {
-                        error = "Internal Server Error",
-                        message = ex.Message
-                    });
-            }
+                               return bookings.Any() ? Ok(bookings) : NotFound("No bookings were found");
+                           },
+                       nameof(GetAllBookingsAsync),
+                       "Error getting all bookings");
         }
 
         /// <summary>
@@ -77,43 +64,28 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> FindBookingByReferenceAsync(string bookingReference,
+        public async Task<IActionResult> FindBookingByReferenceAsync(
+            string bookingReference,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            return await HandleActionAsync(
+                       _logger,
+                       async () =>
+                           {
+                               cancellationToken.ThrowIfCancellationRequested();
+                               if (string.IsNullOrEmpty(bookingReference))
+                               {
+                                   return BadRequest("Booking reference must be provided.");
+                               }
 
-                if (string.IsNullOrEmpty(bookingReference))
-                {
-                    return BadRequest("Booking reference must be provided.");
-                }
-
-                var booking = await _mediator.Send(new GetBookingByReferenceQuery(bookingReference))
-                    .ConfigureAwait(false);
-
-                return booking is not null
-                    ? Ok(booking)
-                    : NotFound($"No booking found with reference {bookingReference}");
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning("FindBookingByReferenceAsync operation was cancelled.");
-
-                return StatusCode(499, "Operation cancelled.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error getting booking by reference {bookingReference}");
-
-                return StatusCode(
-                    500,
-                    new
-                    {
-                        error = "Internal Server Error",
-                        message = ex.Message
-                    });
-            }
+                               var booking = await _mediator.Send(new GetBookingByReferenceQuery(bookingReference))
+                                                 .ConfigureAwait(false);
+                               return booking is not null
+                                          ? Ok(booking)
+                                          : NotFound($"No booking found with reference {bookingReference}");
+                           },
+                       nameof(FindBookingByReferenceAsync),
+                       $"Error getting booking by reference {bookingReference}");
         }
 
         /// <summary>
@@ -132,7 +104,8 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateBookingAsync(CreateBookingModel model,
+        public async Task<IActionResult> CreateBookingAsync(
+            CreateBookingModel model,
             CancellationToken cancellationToken)
         {
             var createBookingValidator = new CreateBookingModelValidator();
@@ -143,49 +116,37 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                 return BadRequest(createBookingModelValidationResult.Errors);
             }
 
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            return await HandleActionAsync(
+                       _logger,
+                       async () =>
+                           {
+                               cancellationToken.ThrowIfCancellationRequested();
+                               var commandResult = await _mediator.Send(
+                                                       new BookRoomCommand(
+                                                           model.HotelId,
+                                                           model.RoomId, 
+                                                           model.CheckInDate,
+                                                           model.CheckOutDate,
+                                                           model.NumberOfGuests)).ConfigureAwait(false);
+                               // The selected room is not available for the specified dates.
+                               if (commandResult.IsFailure)
+                               {
+                                   if (commandResult.Error.ErrorType == Errors.CommandIsNull)
+                                   {
+                                       return StatusCode(
+                                           409,
+                                           $"The selected room is not available for {model.NumberOfGuests} occupants between {model.CheckInDate.ToFormattedDateString()} and {model.CheckOutDate.ToFormattedDateString()}");
+                                   }
 
-                var commandResult = await _mediator.Send(new BookRoomCommand(model.HotelId, model.RoomId,
-                    model.CheckInDate, model.CheckOutDate, model.NumberOfGuests)).ConfigureAwait(false);
+                                   return StatusCode(
+                                       500,
+                                       new { error = "An unexpected error occurred. The booking was not successful." });
+                               }
 
-                //The selected room is not available for the specified dates.
-                if (commandResult.IsFailure)
-                {
-                    if (commandResult.Error.Code.Equals("Room not available to book"))
-                    {
-                        return StatusCode(409,
-                            $"The selected room is not available for {model.NumberOfGuests} occupants between {model.CheckInDate.ToFormattedDateString()} and {model.CheckOutDate.ToFormattedDateString()}");
-                    }
-
-                    return StatusCode(
-                        500,
-                        new
-                        {
-                            error = "An unexpected error occurred. The booking was not successful."
-                        });
-                }
-
-                return Ok($"The booking was created with Booking Reference {commandResult.Value}");
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning("CreateBookingAsync operation was cancelled.");
-
-                return StatusCode(499, "Operation cancelled.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating booking");
-                return StatusCode(
-                    500,
-                    new
-                    {
-                        error = "Internal Server Error",
-                        message = ex.Message
-                    });
-            }
+                               return Ok($"The booking was created with Booking Reference {commandResult.Value}");
+                           },
+                       nameof(CreateBookingAsync),
+                       "Error creating booking");
         }
     }
 }

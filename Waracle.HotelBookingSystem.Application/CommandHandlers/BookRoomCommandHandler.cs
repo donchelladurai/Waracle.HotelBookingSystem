@@ -8,6 +8,8 @@ using Waracle.HotelBookingSystem.Domain.Entities;
 
 namespace Waracle.HotelBookingSystem.Application.CommandHandlers
 {
+    using Waracle.HotelBookingSystem.Common.Enums;
+
     /// <summary>
     /// The command handler responsible for processing room booking requests.
     /// </summary>
@@ -40,18 +42,10 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
         /// <returns>A <see cref="BookRoomCommandResult"/> object representing the changed state.</returns>
         public async Task<Result<string>> Handle(BookRoomCommand command, CancellationToken cancellationToken)
         {
-            if (command == null)
-                return Result<string>.Failure(new Error("Command is null", $"The command inside {typeof(BookRoomCommandHandler)} is null"));
-
-
-            if (cancellationToken == null)
-                return Result<string>.Failure(new Error("CancellationToken is null", $"The CancellationToken inside {typeof(BookRoomCommandHandler)} is null"));
-
-            if (command.NumberOfGuests <= 0)
-                return Result<string>.Failure(new Error("Invalid Number of Guests", $"The value for NumberOfGuests was ${command.NumberOfGuests}"));
-
-            if (command.IsCheckoutDateAfterCheckInDate() == false)
-                return Result<string>.Failure(new Error("Check-Out date is before Check-In date", $"The Check-Out date {command.CheckOutDate.ToShortDateString()} is before the Check-In date {command.CheckInDate}"));
+            if (ArgumentsInvalid(command, cancellationToken, out var result))
+            {
+                return result;
+            }
 
             try
             {
@@ -63,9 +57,11 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
 
                 if (!availableRooms.Any(r => r.Id == command.RoomId))
                 {
-                    _logger.LogError($"Room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}.");
+                    var roomNotAvailableMessage = $"Room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}.";
 
-                    return Result<string>.Failure(new Error("Room not available to book", $"The room {command.RoomId} is not available from {command.CheckInDate} to {command.CheckOutDate}"));
+                    _logger.LogError(roomNotAvailableMessage);
+
+                    return Result<string>.Failure(new Error(Errors.RoomNotAvailable, roomNotAvailableMessage));
                 }
 
                 var room = availableRooms.Single(r => r.Id == command.RoomId);
@@ -99,6 +95,36 @@ namespace Waracle.HotelBookingSystem.Application.CommandHandlers
 
                 throw;
             }
+        }
+
+        private static bool ArgumentsInvalid(BookRoomCommand command, CancellationToken cancellationToken, out Result<string> result)
+        {
+            if (command == null)
+            {
+                result = Result<string>.Failure(new Error(Errors.CommandIsNull, $"The command inside {typeof(BookRoomCommandHandler)} is null"));
+                return true;
+            }
+
+            if (cancellationToken == null)
+            {
+                result = Result<string>.Failure(new Error(Errors.CancellationTokenNotProvided, $"The CancellationToken inside {typeof(BookRoomCommandHandler)} is null"));
+                return true;
+            }
+
+            if (command.NumberOfGuests <= 0)
+            {
+                result = Result<string>.Failure(new Error(Errors.InvalidNumberOfGuests, $"The value for NumberOfGuests was ${command.NumberOfGuests}"));
+                return true;
+            }
+
+            if (command.IsCheckoutDateAfterCheckInDate() == false)
+            {
+                result = Result<string>.Failure(new Error(Errors.CheckOutDateBeforeCheckInDate, $"The Check-Out date {command.CheckOutDate.ToShortDateString()} is before the Check-In date {command.CheckInDate}"));
+                return true;
+            }
+
+            result = Result<string>.Success("All arguments are valid");
+            return true;
         }
 
         /// <summary>
