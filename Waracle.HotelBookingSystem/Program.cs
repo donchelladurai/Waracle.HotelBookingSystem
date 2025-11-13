@@ -8,6 +8,11 @@ using Waracle.HotelBookingSystem.Web.Api.Middleware;
 
 namespace Waracle.HotelBookingSystem
 {
+    using System.Text;
+
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.IdentityModel.Tokens;
+
     public class Program
     {
         public static void Main(string[] args)
@@ -27,6 +32,25 @@ namespace Waracle.HotelBookingSystem
             builder.Services.AddApplicationInsightsTelemetry();
 
             builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(GetHotelsByNameQueryHandler).Assembly));
+
+            
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                                                                {
+                                                                    ValidateIssuer = true,
+                                                                    ValidateAudience = true,
+                                                                    ValidateLifetime = true,
+                                                                    ValidateIssuerSigningKey = true,
+                                                                    ValidIssuer = jwtSettings["Issuer"],
+                                                                    ValidAudience = jwtSettings["Audience"],
+                                                                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                                                                };
+                    });
 
             // Logging
             builder.Logging.AddApplicationInsights(

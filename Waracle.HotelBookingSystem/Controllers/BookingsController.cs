@@ -8,8 +8,10 @@ using Waracle.HotelBookingSystem.Web.Api.Validators;
 
 namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Waracle.HotelBookingSystem.Common.Enums;
 
+    [Authorize]
     [ApiController]
     [Route("/api/bookings")]
     [ApiVersion("1.0")]
@@ -30,7 +32,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// <returns>A list of BookingDto objects containing booking data</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         public async Task<IActionResult> GetAllBookingsAsync(CancellationToken cancellationToken)
         {
@@ -42,7 +44,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
 
                                var bookings = await _mediator.Send(new GetAllBookingsQuery()).ConfigureAwait(false);
 
-                               return bookings.Any() ? Ok(bookings) : NotFound("No bookings were found");
+                               return bookings.Any() ? Ok(bookings) : StatusCode(204, "No bookings were found");
                            },
                        nameof(GetAllBookingsAsync),
                        "Error getting all bookings");
@@ -60,7 +62,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// </returns>
         [HttpGet("{bookingReference}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -82,7 +84,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                                                  .ConfigureAwait(false);
                                return booking is not null
                                           ? Ok(booking)
-                                          : NotFound($"No booking found with reference {bookingReference}");
+                                          : StatusCode(204, $"No booking found with reference {bookingReference}");
                            },
                        nameof(FindBookingByReferenceAsync),
                        $"Error getting booking by reference {bookingReference}");
@@ -99,7 +101,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
         /// 500 Internal Server Error: If an error occurs.
         /// </returns>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status499ClientClosedRequest)]
@@ -143,7 +145,7 @@ namespace Waracle.HotelBookingSystem.Web.Api.Controllers
                                        new { error = "An unexpected error occurred. The booking was not successful." });
                                }
 
-                               return Ok($"The booking was created with Booking Reference {commandResult.Value}");
+                               return StatusCode(201, $"The booking was created with Booking Reference {commandResult.Value}");
                            },
                        nameof(CreateBookingAsync),
                        "Error creating booking");
